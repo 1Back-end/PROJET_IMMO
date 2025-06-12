@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informations de connexion à {{ project_name }}</title>
+</head>
+<body>
+  <p>Bonjour {{ name }},</p>
+  <p>Votre compte sur <strong>{{ project_name }}</strong> a été créé avec succès.</p>
+  <p>
+    Ci-dessous, vous trouverez votre <strong>matricule personnel</strong>. 
+    Ce matricule vous permettra d'accéder à la plateforme et de consulter vos résultats académiques en toute sécurité.
+  </p>
+  <p style="margin-top: 20px;">Votre matricule :</p>
+  <h2 style="color: #1F4283;">{{ matricule }}</h2>
+  <p>Veuillez le conserver soigneusement.</p>
+  <p style="margin-top: 30px;">Merci,<br>L’équipe {{ project_name }}</p>
+</body>
+</html>

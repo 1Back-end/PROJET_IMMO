@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+
+  db_postgres_esm:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: sanctions_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - my-net-esm
+    ports:
+      - "5432:5432"
+
+  adminer_esm:
+    container_name: adminer_esm
+    depends_on:
+      - db_postgres_esm
+    hostname: adminer_esm
+    image: adminer
+    networks:
+      - my-net-esm
+    ports:
+      - 8800:8080
+    restart: always
+    volumes:
+      - ./database:/var/lib/postgresql/data
+
+  backend_service_esm:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: backend_service_esm
+    depends_on:
+      - db_postgres_esm
+    hostname: backend_service
+    networks:
+      - my-net-esm
+    ports:
+      - "5301:80"
+    volumes:
+      - ./:/webapp
+
+networks:
+  my-net-esm:
+
+volumes:
+  db-postgres:
+    driver: local
