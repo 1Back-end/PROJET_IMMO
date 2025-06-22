@@ -128,14 +128,7 @@ def generate_password(min_length=12, max_length=16):
 
 
 def is_valid_password(password):
-  """
-  Checks if a password string meets the following requirements:
-    - At least 8 characters long
-    - Contains at least one lowercase letter
-    - Contains at least one uppercase letter
-    - Contains at least one number
-    # - Contains at least one special character
-  """
+
   min_length = 8
   lowercase = any(char in ascii_lowercase for char in password)
   uppercase = any(char in ascii_uppercase for char in password)
@@ -149,3 +142,12 @@ def is_valid_password(password):
 def generate_matricule(length=12):
     chars = string.ascii_uppercase + string.digits
     return ''.join(random.choices(chars, k=length))
+
+
+def generate_license_key(groups: int = 4, chars_per_group: int = 5) -> str:
+    charset = string.ascii_uppercase + string.digits
+    key = '-'.join(
+        ''.join(random.choices(charset, k=chars_per_group))
+        for _ in range(groups)
+    )
+    return key

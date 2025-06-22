@@ -18,5 +18,27 @@ translation = {
     "user-created-successfully": "User created sucessfully",
     "user-deleted-successfully": "User deleted succesfully",
     "user-status-updated-successfully": "User status updated sucessfully",
+    "service-not-found" : "Service not found",
+    "service-created-successfully" : "Service created successfully",
+    "service-updated-successfully" : "Service updated successfully",
+    "service-deleted-successfully" : "Service deleted successfully",
+    "status-invalid" : "Status invalid",
+    "status-service-updated-successfully" : "Status updated successfully",
+    "service-already-exists" : "The service already exists.",
+    "the-organisation-name-already-exists" : "The organisation name already exists.",
+    "the-organisation-email-already-exists" : "The organisation email already exists.",
+    "the-organisation-phone-number-already-exists" : "The organisation phone number already exists.",
+    "the-owner-email-already-exists" :"The owner email already exists.",
+    "the-owner-phone-number-already-exists" : "The owner phone number already exists.",
+    "organisation-created-successfully" : "The organisation created successfully",
+    "organisation-not-found" : "The organisation not found",
+    "organisation-status-updated-successfully" : "The organisation status updated successfully",
+    "request-send-successfully" : "Request sent successfully",
+    "service-is-used" : "Service is already used",
+    "licence-request-not-found" : "Licence request not found",
+    "request-read-successfully" : "Request read successfully",
+    "request-deleted-successfully" : "Request deleted successfully",
+
+
 
 }

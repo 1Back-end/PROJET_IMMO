@@ -20,6 +20,7 @@ class AddedBySlim(BaseModel):
     last_name:str
     role :str
     phone_number:Optional[str]=None
+    avatar: Optional[FileSlim2] = None
     model_config = ConfigDict(from_attributes=True)
 
 class UserBase(BaseModel):

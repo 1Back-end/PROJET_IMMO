@@ -11,6 +11,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBasic, HTTPBasicC
 from fastapi.staticfiles import StaticFiles
 from fastapi_events.middleware import EventHandlerASGIMiddleware
 from fastapi_events.handlers.local import local_handler
+from sqlalchemy import event
+from sqlalchemy.orm import Session
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -21,6 +23,7 @@ from app.main.core.i18n import add_process_language_header
 from app.main.core.security import decode_access_token
 from app.main.models.db.session import SessionLocal
 from app.main.schedulers import scheduler
+from app.main.models.licences import *
 
 
 security = HTTPBasic()
@@ -131,10 +134,17 @@ async def sentry_exception(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 async def welcome():
-    with open('{}/app/main/templates/html/index.html'.format(os.getcwd())) as f:
-        return str(f.read())
-
+    with open(f"{os.getcwd()}/app/main/templates/html/index.html", encoding="utf-8") as f:
+        content = f.read()
+    return HTMLResponse(content=content, media_type="text/html; charset=utf-8")
 
 @app.on_event("startup")
 def startup_event():
     scheduler.start()
+
+
+@event.listens_for(Session, "before_flush")
+def update_license_status(session, flush_context, instances):
+    for obj in session.new.union(session.dirty):
+        if isinstance(obj, License):
+            obj.update_status_from_dates()

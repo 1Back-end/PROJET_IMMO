@@ -17,7 +17,7 @@ class ConfigClass(BaseSettings):
     SECRET_KEY: str = get_secret("SECRET_KEY", 'H5zMm7XtCKNsab88JQCLkaY4d8hExSjghGyaJDy12M')
     ALGORITHM: str = get_secret("ALGORITHM", 'HS256')
 
-    ADMIN_KEY: str = get_secret("ADMIN_KEY", "qr_code_scan")
+    ADMIN_KEY: str = get_secret("ADMIN_KEY", "Key2025")
     ADMIN_USERNAME: str = get_secret("ADMIN_USERNAME", "admin_tools")
     ADMIN_PASSWORD: str = get_secret("ADMIN_PASSWORD", "XfT89KzLpQ")
 

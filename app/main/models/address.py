@@ -9,7 +9,7 @@ class Address(Base):
     
     """ Address Model for storing user addresses related details """
 
-    __tablename__ = "addresses"
+    __tablename__ = "address"
     
     uuid = Column(String, primary_key=True, unique=True)
 

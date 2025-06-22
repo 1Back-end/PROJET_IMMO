@@ -18,17 +18,17 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
     @classmethod
     def get_by_phone_number(cls, db: Session, *, phone_number: str) -> Union[models.User, None]:
         # Recherche un utilisateur par son numéro de téléphone
-        return db.query(models.User).filter(models.User.phone_number == phone_number).first()
+        return db.query(models.User).filter(models.User.phone_number == phone_number,models.User.is_deleted==False).first()
 
     @classmethod
     def get_by_email(cls, db: Session, *, email: str) -> Union[models.User, None]:
         # Recherche un utilisateur par son email
-        return db.query(models.User).filter(models.User.email == email).first()
+        return db.query(models.User).filter(models.User.email == email,models.User.is_deleted==False).first()
 
     @classmethod
     def get_by_uuid(cls, db: Session, *, uuid: str) -> Union[models.User, None]:
         # Recherche un utilisateur par son UUID
-        return db.query(models.User).filter(models.User.uuid == uuid).first()
+        return db.query(models.User).filter(models.User.uuid == uuid,models.User.is_deleted==False).first()
 
     @classmethod
     def create(cls, db: Session, *, obj_in: schemas.UserCreate) -> models.User:
@@ -64,7 +64,6 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
 
     @classmethod
     def update_user(cls, db: Session, *, obj_in: schemas.UserUpdate):
-        # Met à jour les infos d'un utilisateur existant via UUID
         db_obj = cls.get_by_uuid(db=db, uuid=obj_in.uuid)
         if not db_obj:
             # Lève une erreur 404 si l'utilisateur n'existe pas
@@ -74,7 +73,6 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         db_obj.first_name = obj_in.first_name if obj_in.first_name else db_obj.first_name
         db_obj.last_name = obj_in.last_name if obj_in.last_name else db_obj.last_name
         db_obj.email = obj_in.email if obj_in.email else db_obj.email
-        # Ici une petite coquille: tu as `if db_obj.phone_number else db_obj.phone_number` ça devrait être `if obj_in.phone_number else db_obj.phone_number`
         db_obj.phone_number = obj_in.phone_number if obj_in.phone_number else db_obj.phone_number
         db_obj.login = obj_in.login if obj_in.login else db_obj.login
         db_obj.role = obj_in.role if obj_in.role else db_obj.role
@@ -89,7 +87,7 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
     @classmethod
     def authenticate(cls, db: Session, *, email: str, password: str) -> Union[models.User, None]:
         # Authentifie un utilisateur avec email + mot de passe
-        db_obj: models.User = db.query(models.User).filter(models.User.email == email).first()
+        db_obj: models.User = db.query(models.User).filter(models.User.email == email,models.User.is_deleted==False).first()
         if not db_obj:
             return None  # Aucun utilisateur trouvé avec cet email
 
@@ -113,7 +111,7 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         # Récupère tous les utilisateurs non supprimés avec un rôle spécifique
         return db.query(models.User).filter(
             models.User.is_deleted == False,
-            models.User.role.in_(["ADMIN", "EDIMESTRE","SUPER_ADMIN","BUREAU_ORDRE","SECRETAIRE"])
+            models.User.role.in_(["ADMIN", "EDIMESTRE"])
         ).all()
 
     @classmethod
@@ -132,13 +130,12 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         page: int = 1,
         per_page: int = 25,
     ):
-        record_query = db.query(models.User).filter( models.User.is_deleted == False,models.User.role.in_(["ADMIN", "EDIMESTRE","BUREAU_ORDRE","SECRETAIRE"]))
+        record_query = db.query(models.User).filter( models.User.is_deleted == False,models.User.role.in_(["ADMIN", "EDIMESTRE"]))
 
-        total = record_query.count()  # Total des utilisateurs correspondant au filtre
-        # Pagination avec offset et limit
+        total = record_query.count()
+
         record_query = record_query.offset((page - 1) * per_page).limit(per_page)
 
-        # Retourne une réponse paginée avec total, pages, page actuelle, nombre par page et liste des données
         return schemas.UserResponseList(
             total=total,
             pages=math.ceil(total / per_page),

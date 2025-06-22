@@ -2,4 +2,7 @@ from .backlist_token import *
 from .storage import *
 from .user import * 
 from .address import *
-
+from .services import *
+from .organisation import *
+from .license_requests import  *
+from .licences import *

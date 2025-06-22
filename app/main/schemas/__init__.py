@@ -5,3 +5,7 @@ from .base import DataList
 from .user import *
 from .file import *
 from .adress import * 
+from .services import *
+from .organisation import *
+from .license_requests import *
+from .licenses import *

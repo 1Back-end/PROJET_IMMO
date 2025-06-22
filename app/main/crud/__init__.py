@@ -4,3 +4,7 @@ from .user_crud import *
 from .storage_crud import *
 from .user_crud import *
 from .adress_crud import *
+from .services_crud import *
+from .organisation_crud import *
+from .license_requests_crud import *
+from .licenses_crud import *

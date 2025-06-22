@@ -32,6 +32,14 @@ class AddressCreation(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AddressSlim(BaseModel):
+    city: Optional[str]
+    state: Optional[str] = None
+    zipcode: Optional[str] = None
+    country: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
 class Address(AddressBase):
     uuid: str
     date_added: datetime
