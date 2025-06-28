@@ -18,7 +18,7 @@ def register(
     *,
     db: Session = Depends(get_db),
     obj_in:schemas.UserCreate,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+    # current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
 ):
     if obj_in.avatar_uuid:
         avatar = crud.storage_crud.get_file_by_uuid(db=db,file_uuid=obj_in.avatar_uuid)

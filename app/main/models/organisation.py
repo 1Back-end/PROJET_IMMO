@@ -24,7 +24,7 @@ class Organisation(Base):
 
     # Relations
     address = relationship("Address", backref="organisations")
-    owner = relationship("User", backref="organisations")
+    owner = relationship("User", back_populates="organisations")
     owner_services = relationship("OrganisationOwnerService", back_populates="organisation")
 
     status = Column(String, nullable=False, default=OrganisationStatus.inactive)

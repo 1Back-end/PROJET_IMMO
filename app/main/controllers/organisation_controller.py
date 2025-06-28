@@ -89,4 +89,29 @@ async def get_all_services(
     )
 
 
+@router.get("/get_all_services_for_my_organisations", response_model=None)
+async def get_all_services(
+    *,
+    db: Session = Depends(get_db),
+    page: int = 1,
+    per_page: int = 5,
+    order: Optional[str] = None,
+    order_field: Optional[str] = None,
+    keyword: Optional[str] = None,
+    status: Optional[str] = None,
+    current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    return crud.organisation.get_by_owner_uuid(
+        db,
+        page,
+        per_page,
+        order,
+        order_field,
+        keyword,
+        status,
+        owner_uuid=current_user.uuid,
+    )
+
+
+
 

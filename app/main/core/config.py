@@ -75,7 +75,7 @@ class ConfigClass(BaseSettings):
     SMTP_USER: Optional[str] = get_secret("SMTP_USER", "laurentalphonsewilfried@gmail.com")
     SMTP_PASSWORD: Optional[str] = get_secret("SMTP_PASSWORD", "viuessfzwqnwneil")
     EMAILS_FROM_EMAIL: Optional[EmailStr] = get_secret("EMAILS_FROM_EMAIL", "laurentalphonsewilfried@gmail.com")
-    EMAILS_FROM_NAME: Optional[str] = get_secret("EMAILS_FROM_NAME", "Laurent Alphonse")
+    EMAILS_FROM_NAME: Optional[str] = get_secret("EMAILS_FROM_NAME", "SIA CONSULTING")
 
     @validator("EMAILS_FROM_NAME")
     def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:

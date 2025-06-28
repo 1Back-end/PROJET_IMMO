@@ -27,6 +27,7 @@ class ServiceUpdateStatus(BaseModel):
 class ServiceOut(BaseModel):
     uuid: str
     name: str
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
 class OrganisationOwnerServiceOut(BaseModel):

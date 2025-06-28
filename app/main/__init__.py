@@ -143,8 +143,3 @@ def startup_event():
     scheduler.start()
 
 
-@event.listens_for(Session, "before_flush")
-def update_license_status(session, flush_context, instances):
-    for obj in session.new.union(session.dirty):
-        if isinstance(obj, License):
-            obj.update_status_from_dates()

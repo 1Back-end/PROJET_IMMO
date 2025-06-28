@@ -13,6 +13,8 @@ from app.main.models.db.base_class import Base
 from app.main.utils import logger
 import subprocess
 import logging
+import json
+from app.main import schemas, crud, models
 
 router = APIRouter(prefix="/migrations", tags=["migrations"])
 
@@ -88,3 +90,31 @@ async def create_database_tables(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.post("/create-duration-licence", response_model=schemas.Msg, status_code=201)
+async def create_licence_duration(
+    db: Session = Depends(dependencies.get_db),
+    admin_key: schemas.AdminKey = Body(...)
+):
+    check_user_access_key(admin_key)
+
+    try:
+        path = os.path.join(os.getcwd(), "app", "main", "templates", "default_data", "licence_duration.json")
+        with open(path, encoding='utf-8') as f:
+            durations = json.load(f)
+
+        for d in durations:
+            db_duration = models.LicenceDuration(
+                uuid=d["uuid"],
+                key=d["key"],
+                duration_days=d["duration_days"],
+                description=d.get("description"),
+                is_active=d.get("is_active", True)
+            )
+            db.add(db_duration)
+
+        db.commit()
+        return {"message": "Durées de licences créées avec succès"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

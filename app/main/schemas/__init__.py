@@ -9,3 +9,4 @@ from .services import *
 from .organisation import *
 from .license_requests import *
 from .licenses import *
+from .licence_duration import *

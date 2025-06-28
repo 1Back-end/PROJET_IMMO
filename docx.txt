@@ -1,0 +1,409 @@
+class Organization(Base):
+    __tablename__ = 'organizations'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    name = Column(String, nullable=False)
+    address = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    services = relationship("Service", secondary="organization_services", back_populates="organizations")
+    users = relationship("User", back_populates="organization")
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    full_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    phone = Column(String, nullable=True)
+    password_hash = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)
+    first_login = Column(Boolean, default=True)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id"))
+    organization = relationship("Organization", back_populates="users")
+
+
+class Service(Base):
+    __tablename__ = 'services'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    organizations = relationship("Organization", secondary="organization_services", back_populates="services")
+
+
+class OrganizationService(Base):
+    __tablename__ = 'organization_services'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id"))
+    service_id = Column(UUID(as_uuid=True), ForeignKey("services.id"))
+
+
+class License(Base):
+    __tablename__ = 'licenses'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    license_key = Column(String, unique=True, nullable=False)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id"))
+    service_id = Column(UUID(as_uuid=True), ForeignKey("services.id"))
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
+    status = Column(Enum("active", "expired", "revoked", name="license_status"), default="active")
+    encrypted_data = Column(Text, nullable=True)  # Optionnel : version chiffrée JSON/RSA
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+
+
+class LicenseRequest(Base):
+    __tablename__ = 'license_requests'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id"))
+    service_id = Column(UUID(as_uuid=True), ForeignKey("services.id"))
+    requested_start_date = Column(DateTime, nullable=False)
+    requested_end_date = Column(DateTime, nullable=False)
+    status = Column(Enum("pending", "approved", "rejected", name="request_status"), default="pending")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Notification(Base):
+    __tablename__ = 'notifications'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    title = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    type = Column(Enum("creation", "expiration", "renewal", "alert", name="notification_type"))
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+
+
+
+class LicenseValidationLog(Base):
+    __tablename__ = 'license_validation_logs'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    license_id = Column(UUID(as_uuid=True), ForeignKey("licenses.id"))
+    validation_type = Column(Enum("local", "remote", name="validation_type"))
+    status = Column(Enum("valid", "invalid", "expired", name="validation_status"))
+    validation_time = Column(DateTime, default=datetime.utcnow)
+    ip_address = Column(String, nullable=True)
+
+
+
+Voici une explication claire et concise de chaque modèle du système de gestion des licences :
+🟦 1. Organization – Organisation cliente
+
+Représente une entreprise qui utilise le logiciel.
+Elle peut avoir plusieurs utilisateurs et plusieurs services sous licence.
+
+    id : identifiant unique
+
+    name : nom de l’organisation
+
+    address : adresse physique
+
+    created_at : date de création
+
+    services : liste des services sous licence
+
+    users : liste des utilisateurs associés à cette organisation
+
+🟦 2. User – Administrateur client
+
+Utilisateur lié à une organisation.
+Il peut gérer les licences, demander des renouvellements, etc.
+
+    id : identifiant unique
+
+    full_name, email, phone : infos personnelles
+
+    password_hash : mot de passe chiffré
+
+    is_active : compte actif ou non
+
+    first_login : pour forcer un changement de mot de passe la première fois
+
+    organization_id : organisation à laquelle il appartient
+
+🟦 3. Service – Service logiciel sous licence
+
+Fonctionnalité ou module logiciel que l'organisation souhaite utiliser sous licence.
+
+    id : identifiant du service
+
+    name : nom du service (ex. : RH, Comptabilité)
+
+    description : détails ou usage
+
+    organizations : liste des organisations qui ont souscrit à ce service
+
+🟦 4. OrganizationService – Table de liaison
+
+Permet de faire la liaison many-to-many entre les organisations et les services.
+Chaque ligne indique qu’une organisation utilise un service donné.
+
+    organization_id : organisation concernée
+
+    service_id : service utilisé
+
+🟦 5. License – Licence logicielle
+
+Contient les détails techniques d’une licence active, expirée ou révoquée.
+
+    license_key : clé unique (ex. : ABCD-1234-EFGH)
+
+    organization_id, service_id : à qui et à quoi elle s’applique
+
+    start_date, end_date : durée de validité
+
+    status : état (active, expired, revoked)
+
+    encrypted_data : JSON signé ou chiffré de la licence
+
+    created_at : date de génération
+
+🟦 6. LicenseRequest – Demande de licence
+
+Gère le processus de demande d’une nouvelle licence par une organisation.
+Peut être en attente, validée ou rejetée.
+
+    organization_id, service_id : demandeur et service demandé
+
+    requested_start_date, requested_end_date : période demandée
+
+    status : état du traitement (pending, approved, rejected)
+
+🟦 7. Notification – Notification utilisateur
+
+Système d’alerte pour informer l’utilisateur de certains événements.
+
+    user_id : destinataire
+
+    title, message : contenu de la notification
+
+    type : type (creation, expiration, etc.)
+
+    is_read : marqueur de lecture
+
+    created_at : date d’envoi
+
+🟦 8. LicenseValidationLog – Historique de vérification
+
+Trace les tentatives de validation d’une licence (locales ou distantes).
+
+    license_id : licence concernée
+
+    validation_type : local ou remote
+
+    status : valid, invalid, expired
+
+    validation_time : date et heure
+
+    ip_address : IP du client qui a validé la licence (utile pour audit)
+
+Souhaites-tu un diagramme des relations (UML) ou les schemas Pydantic pour FastAPI maintenant ?
+You said:
+comment ca va fonctionner le syste
+ChatGPT said:
+
+Voici une explication claire et structurée du fonctionnement global du système de gestion des licences :
+🔁 1. Création de compte client + organisation
+
+    Un nouvel utilisateur accède à l’interface.
+
+    Il crée un compte en remplissant :
+
+        Ses informations personnelles.
+
+        Celles de l’organisation (nom, adresse).
+
+        Les services souhaités (ex. : RH, paie…).
+
+    Le système :
+
+        Crée l’utilisateur.
+
+        Crée l’organisation.
+
+        Fait le lien entre les deux.
+
+        Prépare les services pour une future génération de licences.
+
+🧾 2. Demande de licence
+
+    Depuis son interface, le client fait une demande de licence pour un ou plusieurs services.
+
+    Il définit les dates de début et de fin.
+
+    La demande est enregistrée comme pending.
+
+🛠️ 3. Traitement par l’administrateur
+
+    L’administrateur du système (côté fournisseur) :
+
+        Consulte les demandes.
+
+        Valide manuellement après vérification (paiement, profil, etc.).
+
+        Peut aussi rejeter une demande.
+
+🔐 4. Génération de la licence
+
+    Une fois validée :
+
+        Le système génère une clé unique.
+
+        Crée un fichier JSON ou .lic chiffré (ex. : RSA).
+
+        La licence contient :
+
+            ID organisation + service.
+
+            Dates de validité.
+
+            Statut : active.
+
+    L’utilisateur peut télécharger la licence depuis son espace.
+
+🧩 5. Insertion de la licence côté client
+
+    Le client ouvre son logiciel (ex. application desktop).
+
+    Il insère le fichier de licence dans l’interface.
+
+    Le logiciel :
+
+        Vérifie localement la licence (format, signature).
+
+        Envoie une requête à l’API pour valider à distance (statut : active, non expirée).
+
+✅ 6. Accès accordé ou refusé
+
+    Si tout est correct :
+
+        Le logiciel fonctionne.
+
+        Une notification de succès s’affiche.
+
+    Si licence invalide ou expirée :
+
+        Accès refusé.
+
+        Message d’erreur explicite.
+
+🔁 7. Renouvellement ou révocation
+
+    L’administrateur ou le client peut :
+
+        Renouveler une licence (avant expiration).
+
+        Révoquer une licence (en cas de fraude, non-paiement…).
+
+    Une licence révoquée ou expirée désactive l'accès au logiciel côté client.
+
+🛡️ 8. Sécurité intégrée
+
+    Les communications passent par HTTPS.
+
+    Les licences sont signées ou chiffrées (RSA, AES).
+
+    L’authentification utilise JWT.
+
+    Des logs de validation sont conservés pour l’audit.
+
+Souhaites-tu un schéma illustratif du fonctionnement ? Ou une maquette UI/UX pour le client ou l’administrateur ?
+You said:
+ici c'ets une applicatio  web avec angular js
+ChatGPT said:
+
+Merci pour la précision. Comme il s'agit d'une application web avec AngularJS (front-end) et FastAPI (back-end), voici comment le fonctionnement global du système est adapté au web :
+🧭 1. Architecture Web du Système
+
+    Client web AngularJS (interface de gestion du client)
+
+    API FastAPI (serveur de gestion/validation de licences)
+
+    Base de données PostgreSQL (stockage des utilisateurs, organisations, licences, etc.)
+
+🔐 2. Authentification Web (JWT)
+
+    Le client se connecte via l'interface AngularJS.
+
+    Les identifiants sont envoyés à l’API FastAPI.
+
+    FastAPI génère un JWT si les identifiants sont valides.
+
+    Le token est stocké en local (localStorage) et utilisé pour chaque requête HTTP (en-tête Authorization).
+
+🧾 3. Création de l’Organisation (AngularJS → FastAPI)
+
+    Formulaire AngularJS :
+
+        Nom, Email, Téléphone, Mot de passe
+
+        Nom de l'organisation, adresse
+
+        Choix des services
+
+    À la soumission :
+
+        L'API FastAPI reçoit les données.
+
+        Crée l'utilisateur, l’organisation, et lie les services.
+
+        Retourne un message de succès.
+
+📜 4. Demande et Génération de Licence
+
+    Dans AngularJS :
+
+        Le client fait une demande de licence (via formulaire).
+
+    L'API enregistre la demande avec le statut en_attente.
+
+    L’administrateur se connecte depuis son interface (AngularJS aussi).
+
+    Il valide la demande → L’API génère une licence :
+
+        Chiffrement/sécurisation.
+
+        Création d’un fichier .lic (disponible en téléchargement).
+
+🧩 5. Validation côté client final (web ou logiciel)
+
+    Le client final (dans Angular ou dans une app connectée à l’API) :
+
+        Téléverse le fichier .lic.
+
+        Le fichier est lu et validé en local (signature, dates, etc.).
+
+        L’application appelle l’API /validate-licence pour confirmation distante.
+
+🔁 6. Gestion continue des licences (AngularJS)
+
+    Depuis le tableau de bord :
+
+        Le client peut voir l'état de ses licences (active, expirée, révoquée).
+
+        Il peut demander un renouvellement.
+
+        Le système affiche les notifications de rappel avant expiration.
+
+🔒 7. Sécurité web assurée
+
+    Toutes les communications AngularJS ↔ FastAPI sont en HTTPS.
+
+    Les tokens sont sécurisés et expirent automatiquement.
+
+    Les fichiers .lic sont chiffrés (RSA ou AES).
+
+    Protection contre :
+
+        Requêtes non autorisées (vérification de rôle dans les endpoints FastAPI).
+
+        Licences falsifiées (vérification de la signature RSA côté client/serveur).
+
+📌 Résumé du fonctionnement dans une app web AngularJS :
+Action	AngularJS (Front-end)	FastAPI (Back-end)
+Inscription	Formulaire	Création utilisateur/organisation
+Connexion	JWT token	Authentification et génération du token
+Demande licence	Formulaire	Enregistrement demande
+Validation admin	Interface admin	Génération et signature de licence
+Téléchargement	Bouton "Télécharger"	Envoi du fichier .lic
+Vérification	Chargement fichier .lic	Endpoint /validate-licence

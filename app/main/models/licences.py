@@ -1,7 +1,7 @@
-from datetime import datetime,timezone
+from datetime import datetime, timezone, date
 from enum import Enum
 
-from sqlalchemy import Column, ForeignKey, String, Text, DateTime, Boolean,Integer, func,String
+from sqlalchemy import Column, ForeignKey, String, Text, DateTime, Boolean, Integer, func, String, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -13,6 +13,8 @@ class LicenceStatus(str, Enum):
     active = "active"
     expired = "expired"
     revoked = "revoked"
+    deleted = "deleted"
+    prolonged = "prolonged"
 
 class License(Base):
     __tablename__ = 'licenses'
@@ -25,13 +27,15 @@ class License(Base):
     service_uuid = Column(String, ForeignKey("services.uuid",onupdate="CASCADE",ondelete="CASCADE"),nullable=False)
     service = relationship("Service", foreign_keys=[service_uuid], backref="licenses")
 
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
+    licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    licence_duration = relationship("LicenceDuration", foreign_keys=[licence_duration_uuid], backref="licenses")
+
     status = Column(String, nullable=False,default=LicenceStatus.pending)
     encrypted_data = Column(Text, nullable=True)
 
     added_by = Column(String, ForeignKey("users.uuid"), nullable=False)
     creator = relationship("User", foreign_keys=[added_by],backref="licenses")
+    expires_at = Column(DateTime, nullable=True)
 
     is_deleted = Column(Boolean, nullable=False, default=False)
 
@@ -39,24 +43,13 @@ class License(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
     @hybrid_property
-    def remaining_days(self):
-        if self.end_date and self.end_date > datetime.now(timezone.utc):
-            return (self.end_date - datetime.now(timezone.utc)).days
-        return 0
+    def is_expired(self):
+        if self.status != "active":
+            return False
+        if not self.expires_at:
+            return None  # renvoie None si la date est vide
+        return datetime.utcnow() > self.expires_at
 
-    @property
-    def dynamic_status(self):
-        if self.status == LicenceStatus.revoked:
-            return LicenceStatus.revoked
-        elif self.end_date < datetime.now(timezone.utc):
-            return LicenceStatus.expired
-        return LicenceStatus.active
 
-    def update_status_from_dates(self):
-        if self.status == LicenceStatus.revoked.value:
-            return
-        if self.end_date < datetime.now(timezone.utc):
-            self.status = LicenceStatus.expired.value
-        else:
-            self.status = LicenceStatus.active.value
+
 

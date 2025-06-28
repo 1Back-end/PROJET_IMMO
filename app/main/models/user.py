@@ -53,6 +53,9 @@ class User(Base):
     last_login_date = Column(DateTime, nullable=True, default=None)  # Date de la dernière connexion
     connexion_counter = Column(Integer, nullable=True, default=0)  # Compteur de connexions
 
+    organisations = relationship("Organisation", back_populates="owner", uselist=False)
+
+
     def __repr__(self):
         """
         String representation of the User object.

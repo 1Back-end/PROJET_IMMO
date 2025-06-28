@@ -1,25 +1,54 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
-from app.main.schemas import AddedBySlim
+from app.main.schemas import AddedBySlim, FileSlim2, OwnerHasUser
 
 
 class LicenseRequest(BaseModel):
     title: str
     description: str
+    type: str
 
 class LicenceRequestCreate(LicenseRequest):
     pass
 
-class LicenseResponse(BaseModel):
+
+
+class OrganisationSlim(BaseModel):
     uuid: str
-    title: str
-    description: str
-    is_read: bool
-    sender : Optional[AddedBySlim]
-    created_at: datetime
-    updated_at: datetime
+    name: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OrganisationWithOwner(BaseModel):
+    uuid: str
+    name: str
+    owner : OwnerHasUser
+
+class UserOut(BaseModel):
+    first_name: str
+    last_name: str
+    role: str
+    phone_number: Optional[str] = None
+    avatar: Optional[FileSlim2] = None
+    organisations:Optional[OrganisationSlim]=None  # ✅ correction ici
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+
+
+class LicenseResponse(BaseModel):
+    uuid: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    is_read: Optional[bool] = None
+    type: Optional[str] = None
+    status: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    owner: Optional[UserOut] = None
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -35,3 +64,10 @@ class LicenceRequestResponseList(BaseModel):
 
 class LicenceRequestIsRead(BaseModel):
     uuid: str
+
+
+class LicenceRequestUpdateStatus(BaseModel):
+    uuid: str
+    status: str
+
+

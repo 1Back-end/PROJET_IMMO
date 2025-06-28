@@ -1,0 +1,37 @@
+[
+  {
+    "uuid": "7f9b07d2-3c25-4e7e-a38e-59d69ff37a40",
+    "key": "GRATUIT",
+    "duration_days": 7,
+    "description": "Accès gratuit d'une semaine",
+    "is_active": true
+  },
+  {
+    "uuid": "bd25d95e-3622-4c32-9c8d-c33c1f263f7c",
+    "key": "BASIQUE",
+    "duration_days": 30,
+    "description": "Abonnement d'un mois",
+    "is_active": true
+  },
+  {
+    "uuid": "acf5810a-7e63-4047-a420-7d3a60c37d67",
+    "key": "STANDARD",
+    "duration_days": 180,
+    "description": "Abonnement de six mois",
+    "is_active": true
+  },
+  {
+    "uuid": "4104d36a-f9a5-4e4b-93ce-9dc4d38821a7",
+    "key": "PROFESSIONNEL",
+    "duration_days": 365,
+    "description": "Abonnement d'un an",
+    "is_active": true
+  },
+  {
+    "uuid": "e14866d6-7a32-4ef2-9b1c-b7b08a7b5481",
+    "key": "PREMIUM",
+    "duration_days": 730,
+    "description": "Abonnement de deux ans",
+    "is_active": true
+  }
+]

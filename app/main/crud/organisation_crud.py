@@ -73,7 +73,7 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             title="Création d'une organisation",
             description=f"Une nouvelle organisation '{obj_in.company_name}' a été créée par {obj_in.owner_first_name} {obj_in.owner_last_name}.",
             send_by=user_uuid,
-            type="création d’organisation"
+            type="Création d’organisation"
         )
         db.add(new_notification)
 
@@ -131,7 +131,7 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             joinedload(models.Organisation.owner)
         ).filter(
             models.Organisation.is_deleted == False
-        )
+        ).order_by(models.Organisation.created_at.desc())
 
         if keyword:
             record_query = record_query.filter(
@@ -157,6 +157,59 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
 
         record_query = record_query.offset((page - 1) * per_page).limit(per_page)
 
+
+        return schemas.OrganisationResponseList(
+            total=total,
+            pages=math.ceil(total / per_page),
+            per_page=per_page,
+            current_page=page,
+            data=record_query,
+        )
+
+    @classmethod
+    def get_by_owner_uuid(
+            cls,
+            db: Session,
+            page: int = 1,
+            per_page: int = 5,
+            order: Optional[str] = None,
+            order_field: Optional[str] = None,
+            keyword: Optional[str] = None,
+            status: Optional[str] = None,
+            owner_uuid: Optional[str] = None,
+    ):
+        record_query = db.query(models.Organisation).options(
+            joinedload(models.Organisation.owner_services).joinedload(models.OrganisationOwnerService.service),
+            joinedload(models.Organisation.address),
+            joinedload(models.Organisation.owner)
+        ).filter(
+            models.Organisation.is_deleted == False,
+            models.Organisation.owner_uuid == owner_uuid
+        )
+
+        if keyword:
+            record_query = record_query.filter(
+                or_(
+                    models.Organisation.name.ilike(f'%{keyword}%'),
+                    models.Organisation.description.ilike(f'%{keyword}%'),
+                    models.Organisation.uuid.ilike(f'%{keyword}%'),
+                    models.Organisation.phone_number.ilike(f'%{keyword}%'),
+                    models.Organisation.description.ilike(f'%{keyword}%'),
+
+                )
+            )
+
+        if order and order_field and hasattr(models.Organisation, order_field):
+            if order == "asc":
+                record_query = record_query.order_by(getattr(models.Organisation, order_field).asc())
+            else:
+                record_query = record_query.order_by(getattr(models.Organisation, order_field).desc())
+        if status:
+            record_query = record_query.filter(models.Organisation.status.ilike(f'%{status}%'))
+
+        total = record_query.count()
+
+        record_query = record_query.offset((page - 1) * per_page).limit(per_page)
 
         return schemas.OrganisationResponseList(
             total=total,

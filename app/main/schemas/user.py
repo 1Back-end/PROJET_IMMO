@@ -6,7 +6,7 @@ from app.main.schemas.file import FileSlim2
  
 class AddedBy(BaseModel):
     uuid: str
-    email: EmailStr
+    email: str
     first_name:str
     last_name:str
     phone_number:Optional[str]=None
@@ -47,7 +47,7 @@ class UserUpdate(BaseModel):
 
 class UserResponseInfo(BaseModel):
     uuid:str
-    email:EmailStr
+    email:str
     phone_number:str
     first_name:str
     last_name:str
@@ -114,7 +114,7 @@ class UserProfile(BaseModel):
     avatar:Optional[FileSlim2]=None
 
 class ResetPasswordOption2Step1(BaseModel):
-    email: EmailStr
+    email: str
 
 class ResetPasswordOption2Step2(BaseModel):
     email: str
@@ -141,4 +141,12 @@ class UserResponseList(BaseModel):
     current_page:int
     data: list[User]
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OwnerHasUser(BaseModel):
+    email: EmailStr
+    phone_number: str
+    first_name: str
+    last_name: str
     model_config = ConfigDict(from_attributes=True)

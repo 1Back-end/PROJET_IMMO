@@ -1,5 +1,5 @@
 import math
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 import bcrypt
 from fastapi import HTTPException
@@ -9,6 +9,7 @@ from typing import List, Optional, Union
 import uuid
 from app.main.core.i18n import __
 from sqlalchemy.orm import Session
+from app.main.core.mail import notify_owner_new_licence
 from app.main.crud.base import CRUDBase
 from app.main import models,schemas,crud
 from app.main.core.security import  generate_license_key
@@ -43,27 +44,56 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
     def create(cls, db: Session, *, request: schemas.LicenceCreate, added_by: str) -> Optional[models.License]:
         license_key = generate_license_key()
 
-        data_to_sign = f"{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.start_date}|{request.end_date}".encode("utf-8")
+        data_to_sign = f"{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode("utf-8")
 
         signature = cls.sign_license_data(data_to_sign)
+
+
 
         db_obj = models.License(
             uuid=str(uuid.uuid4()),
             license_key=license_key,
             organization_uuid=request.organization_uuid,
             service_uuid=request.service_uuid,
-            start_date=request.start_date,
-            end_date=request.end_date,
+            licence_duration_uuid=request.licence_duration_uuid,
             encrypted_data=signature,
-            added_by=added_by,
+            added_by=added_by
         )
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+
+        organisation = db.query(models.Organisation).filter(
+            models.Organisation.uuid == request.organization_uuid
+        ).join(models.User).first()
+
+        if not organisation:
+            raise HTTPException(status_code=404, detail="Organisation not found")
+
+        owner = organisation.owner
+
+        notify_owner_new_licence(
+            email_to=owner.email,
+            name=f"{owner.first_name} {owner.last_name}",
+            licence=signature,
+            service=db_obj.service.name
+        )
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title="Licence Générée",
+            type="Demande de licence",
+            description="Nouvelle licence générée",
+            send_by=added_by
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
         return db_obj
 
     @classmethod
-    def activate_service(cls, db: Session, *, service_uuid: str, licence_uuid: str) -> Optional[models.License]:
+    def activate_service(cls, db: Session, *, service_uuid: str, licence_uuid: str, encrypted_data: str) -> Optional[
+        models.License]:
+
         db_service = crud.services.get_by_uuid(db=db, uuid=service_uuid)
         if not db_service:
             raise HTTPException(status_code=404, detail=__(key="service-not-found"))
@@ -75,22 +105,16 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         if not db_licence:
             raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
 
-        if db_service.organization_uuid != db_licence.organization_uuid:
-            raise HTTPException(status_code=400, detail=__(key="licence-organization-mismatch"))
-
-        if db_service.service_uuid != db_licence.service_uuid:
-            raise HTTPException(status_code=400, detail=__(key="licence-service-mismatch"))
-
-        if db_licence.end_date < datetime.utcnow():
-            raise HTTPException(status_code=400, detail=__(key="licence-expired"))
-
         if db_licence.status == models.LicenceStatus.expired:
             raise HTTPException(status_code=400, detail=__(key="licence-status-expired"))
 
         if db_licence.status == models.LicenceStatus.revoked:
             raise HTTPException(status_code=400, detail=__(key="licence-status-revoked"))
 
-        db_service.status = models.ServiceStatus.active
+        db_licence.status = models.LicenceStatus.active
+        db_licence.expires_at = datetime.utcnow() + timedelta(days=db_licence.licence_duration.duration_days)
+        db_licence.encrypted_data = encrypted_data
+
         db.commit()
 
 
@@ -115,6 +139,156 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
 
         db_licence.end_date = new_end_date
         db.commit()
+
+
+    @classmethod
+    def revoke_licence(cls,db:Session,*,licence_uuid:str,service_uuid:str) -> Optional[models.License]:
+        db_service = crud.services.get_by_uuid(db=db, uuid=service_uuid)
+        if not db_service:
+            raise HTTPException(status_code=404, detail=__(key="service-not-found"))
+
+        if db_service.status == models.ServiceStatus.inactive:
+            raise HTTPException(status_code=400, detail=__(key="service-inactive"))
+
+        db_licence = cls.get_by_uuid(db=db, uuid=licence_uuid)
+        if not db_licence:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+
+        if db_licence.end_date < date.today():
+            raise HTTPException(status_code=400, detail=__(key="licence-expired"))
+        db_licence.status = models.ServiceStatus.inactive
+        db.commit()
+
+
+    @classmethod
+    def soft_delete(cls,db:Session,*,uuid:str):
+        obj_in = cls.get_by_uuid(db=db, uuid=uuid)
+        if not obj_in:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+        obj_in.is_deleted = True
+        db.commit()
+
+    @classmethod
+    def drop_delete(cls,db:Session,*,uuid:str):
+        obj_in = cls.get_by_uuid(db=db, uuid=uuid)
+        if not obj_in:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+        db.delete(obj_in)
+        db.commit()
+
+    @classmethod
+    def get_all_licence(
+            cls,
+            db: Session,
+            page: int = 1,
+            per_page: int = 30,
+            order: Optional[str] = None,
+            order_field: Optional[str] = None,
+            keyword: Optional[str] = None,
+            status: Optional[str] = None,
+    ):
+        record_query = db.query(models.License).filter(models.License.is_deleted == False).order_by(models.License.created_at.desc())
+
+        if keyword:
+            record_query = record_query.filter(
+                or_(
+                    models.License.license_key.ilike(f'%{keyword}%'),
+                    models.License.encrypted_data.ilike(f'%{keyword}%')
+
+                )
+            )
+        if order and order_field and hasattr(models.License, order_field):
+            if order == "asc":
+                record_query = record_query.order_by(getattr(models.LicenceRequest, order_field).asc())
+            else:
+                record_query = record_query.order_by(getattr(models.License, order_field).desc())
+        if status:
+            record_query = record_query.filter(models.License.status == status)
+
+        total = record_query.count()
+
+        record_query = record_query.offset((page - 1) * per_page).limit(per_page).all()
+
+        return schemas.LicenceResponseList(
+            total=total,
+            pages=math.ceil(total / per_page),
+            per_page=per_page,
+            current_page=page,
+            data=record_query
+        )
+
+    @classmethod
+    def get_all_my_licence(
+            cls,
+            db: Session,
+            owner_uuid: Optional[str] = None,
+            page: int = 1,
+            per_page: int = 30,
+            order: Optional[str] = None,
+            order_field: Optional[str] = None,
+            keyword: Optional[str] = None,
+            status: Optional[str] = None,
+    ):
+        # On fait la jointure License -> Organisation
+        record_query = db.query(models.License).join(models.Organisation).filter(
+            models.License.is_deleted == False
+        ).order_by(models.License.created_at.desc())
+
+        if owner_uuid:
+            record_query = record_query.filter(models.Organisation.owner_uuid == owner_uuid)
+
+        if keyword:
+            record_query = record_query.filter(
+                or_(
+                    models.License.license_key.ilike(f'%{keyword}%'),
+                    models.License.encrypted_data.ilike(f'%{keyword}%')
+                )
+            )
+
+        if order and order_field and hasattr(models.License, order_field):
+            if order == "asc":
+                record_query = record_query.order_by(getattr(models.License, order_field).asc())
+            else:
+                record_query = record_query.order_by(getattr(models.License, order_field).desc())
+
+        if status:
+            record_query = record_query.filter(models.License.status == status)
+
+        total = record_query.count()
+
+        record_query = record_query.offset((page - 1) * per_page).limit(per_page).all()
+
+        return schemas.LicenceResponseList(
+            total=total,
+            pages=math.ceil(total / per_page),
+            per_page=per_page,
+            current_page=page,
+            data=record_query
+        )
+
+    @classmethod
+    def revoke_licence(cls,db:Session,*,uuid:str):
+        db_obj = cls.get_by_uuid(db=db, uuid=uuid)
+        if not db_obj:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+        db_obj.status = models.LicenceStatus.revoked
+        db.commit()
+
+    @classmethod
+    def prolonge_licence(cls, db: Session, *, uuid: str, number_of_days: int):
+        db_obj = cls.get_by_uuid(db=db, uuid=uuid)
+        if not db_obj:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+        now = datetime.utcnow()
+        if db_obj.expires_at and db_obj.expires_at > now:
+            db_obj.expires_at += timedelta(days=number_of_days)
+        else:
+            db_obj.expires_at = now + timedelta(days=number_of_days)
+
+        db_obj.status = models.LicenceStatus.prolonged
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
 
 
 
