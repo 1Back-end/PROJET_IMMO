@@ -1,4 +1,5 @@
 import math
+import os
 from datetime import datetime, date, timedelta
 
 import bcrypt
@@ -62,22 +63,35 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+        cert_dir = "certificats"
+        os.makedirs(cert_dir, exist_ok=True)
 
-        organisation = db.query(models.Organisation).filter(
-            models.Organisation.uuid == request.organization_uuid
-        ).join(models.User).first()
+        # S'assurer que la signature est encodée en base64 au format PEM
+        pem_signature = base64.b64encode(signature.encode("utf-8")).decode('utf-8')
+        pem_formatted = f"-----BEGIN CERTIFICATE-----\n{pem_signature}\n-----END CERTIFICATE-----"
 
-        if not organisation:
-            raise HTTPException(status_code=404, detail="Organisation not found")
+        cer_filename = f"{license_key}.txt"
+        cer_path = os.path.join(cert_dir, cer_filename)
 
-        owner = organisation.owner
+        # Écriture dans le fichier .cer
+        with open(cer_path, "w", encoding="utf-8") as f:
+            f.write(pem_formatted)
 
-        notify_owner_new_licence(
-            email_to=owner.email,
-            name=f"{owner.first_name} {owner.last_name}",
-            licence=signature,
-            service=db_obj.service.name
-        )
+        #organisation = db.query(models.Organisation).filter(
+            #models.Organisation.uuid == request.organization_uuid
+        #).join(models.User).first()
+
+        #if not organisation:
+            #raise HTTPException(status_code=404, detail="Organisation not found")
+
+        #owner = organisation.owner
+
+        #notify_owner_new_licence(
+            #email_to=owner.email,
+            #name=f"{owner.first_name} {owner.last_name}",
+            #licence=signature,
+            #service=db_obj.service.name
+        #)
         new_notification = models.LicenceRequest(
             uuid=str(uuid.uuid4()),
             title="Licence Générée",

@@ -46,21 +46,30 @@ class User(Base):
                               nullable=True)
     avatar = relationship("Storage", foreign_keys=[avatar_uuid])
 
-    # Nouveaux champs ajoutés
-    login = Column(String, nullable=True)  # Nombre de connexions de l'utilisateur
-    is_new_user = Column(Boolean, default=True)  # Indicateur pour savoir si l'utilisateur est nouveau
-    first_login_date = Column(DateTime, nullable=True, default=None)  # Date de la première connexion
-    last_login_date = Column(DateTime, nullable=True, default=None)  # Date de la dernière connexion
-    connexion_counter = Column(Integer, nullable=True, default=0)  # Compteur de connexions
+    login = Column(String, nullable=True)
+    is_new_user = Column(Boolean, default=True)
+    first_login_date = Column(DateTime, nullable=True, default=None)
+    last_login_date = Column(DateTime, nullable=True, default=None)
+    connexion_counter = Column(Integer, nullable=True, default=0)
 
     organisations = relationship("Organisation", back_populates="owner", uselist=False)
 
 
     def __repr__(self):
-        """
-        String representation of the User object.
-
-        Returns:
-            str: Representation of the user with first name, last name, and email.
-        """
         return f"User('{self.first_name} {self.last_name}', '{self.email}')"
+
+
+
+class UserActionValidation(Base):
+    __tablename__ = 'user_action_validations'
+
+    uuid: str = Column(String, primary_key=True)
+
+    user_uuid: str = Column(String, ForeignKey('users.uuid'), nullable=True)
+    code: str = Column(String, unique=False, nullable=True)
+    expired_date: any = Column(DateTime, default=datetime.now())
+    value: str = Column(String, default="", nullable=True)
+
+    date_added: any = Column(DateTime, nullable=False, default=datetime.now())
+
+

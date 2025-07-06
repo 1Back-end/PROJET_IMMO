@@ -33,24 +33,24 @@ class TokenRequired(HTTPBearer):
 
         if credentials:
             if not credentials.scheme == "Bearer":
-                raise HTTPException(status_code=403, detail=__("dependencies-token-invalid"))
+                raise HTTPException(status_code=403, detail=__(key="dependencies-token-invalid"))
             token_data = decode_access_token(credentials.credentials)
             if not token_data:
-                raise HTTPException(status_code=403, detail=__("dependencies-token-invalid"))
+                raise HTTPException(status_code=403, detail=__(key="dependencies-token-invalid"))
 
             if models.BlacklistToken.check_blacklist(db, credentials.credentials):
-                raise HTTPException(status_code=403, detail=__("dependencies-token-invalid"))
+                raise HTTPException(status_code=403, detail=__(key="dependencies-token-invalid"))
 
             current_user = crud.user.get_by_uuid(db=db, uuid=token_data["sub"])
             if not current_user:
-                raise HTTPException(status_code=403, detail=__("dependencies-token-invalid"))
+                raise HTTPException(status_code=403, detail=__(key="dependencies-token-invalid"))
             
             if current_user.is_new_user and not self.let_new_user:
-                raise HTTPException(status_code=403, detail=__("first-time-login-require-change-password"))
+                raise HTTPException(status_code=403, detail=__(key="first-time-login-require-change-password"))
             
             # Vérifie si le rôle de l'utilisateur fait partie des rôles autorisés
             if self.roles and current_user.role not in self.roles:
-                raise HTTPException(status_code=403, detail="Insufficient permissions")
+                raise HTTPException(status_code=403, detail=__(key="insufficient permissions"))
 
             """
             if required_roles:

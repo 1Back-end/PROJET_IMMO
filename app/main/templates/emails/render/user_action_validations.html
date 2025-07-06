@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Activation de compte - {{ project_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1f4283;
+        }
+        .code {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1f4283;
+            letter-spacing: 4px;
+            margin: 20px 0;
+        }
+        .footer {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bonjour {{ name }},</h1>
+        <p>Merci de vous être inscrit sur <strong>{{ project_name }}</strong>.</p>
+        <p>Voici votre code de confirmation de compte :</p>
+        <div class="code">{{ code }}</div>
+        <p>Ce code est valide pendant <strong>{{ valid_minutes }} minutes</strong>.</p>
+        <p>Si vous n'avez pas demandé cette confirmation, veuillez ignorer cet email.</p>
+        <p class="footer">Cordialement,<br/>L'équipe {{ project_name }}</p>
+    </div>
+</body>
+</html>

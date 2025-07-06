@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Body, HTTPException, Query, File
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette.requests import Request
-from app.main.core.mail import send_reset_password_option2_email
+from app.main.core.mail import send_reset_password_option2_email, send_account_confirmation_email
 from app.main.core.dependencies import get_db, TokenRequired
 from app.main import schemas, crud, models
 from app.main.core.i18n import __
@@ -47,6 +47,43 @@ async def login(
             "token_type": "bearer",
         }
     }
+
+
+@router.post("/code/send", summary="send code", response_model=schemas.Msg)
+def send_code(
+        input: schemas.ResetPasswordOption2Step1,
+        db: Session = Depends(get_db),
+) -> schemas.Msg:
+
+    user = crud.user.get_by_email(db=db, email=input.email)
+    if not user:
+        raise HTTPException(status_code=404, detail=__("user-not-found"))
+
+    # Generate code for validation after
+    code = generate_code(length=12)
+    code = str(code[0:6])
+
+    user_code: models.UserActionValidation = db.query(models.UserActionValidation).filter(
+        models.UserActionValidation.user_uuid == user.uuid)
+
+    if user_code.count()>0:
+        user_code.delete()
+        db.flush()
+
+    db_code = models.UserActionValidation(
+        uuid=str(uuid.uuid4()),
+        code=code,
+        user_uuid=user.uuid,
+        value=code,
+        expired_date=datetime.now() + timedelta(minutes=30)
+    )
+
+    db.add(db_code)
+    db.commit()
+
+    send_account_confirmation_email(email_to=input.email, name=(user.firstname+user.lastname),code=code,valid_minutes=30)
+
+    return schemas.Msg(message=__("account-validation-pending"))
 
 
 @router.put("/change-password", response_model=schemas.UserAuthentication)

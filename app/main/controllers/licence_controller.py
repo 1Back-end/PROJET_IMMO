@@ -1,7 +1,10 @@
+import os
 from datetime import timedelta, datetime, date
 from typing import Any,Optional
 from fastapi import APIRouter, Depends, Body, HTTPException,Query
 from sqlalchemy.orm import Session
+from starlette.responses import FileResponse
+
 from app.main.core.dependencies import get_db, TokenRequired
 from app.main import schemas, crud, models
 from app.main.core.i18n import __
@@ -49,6 +52,26 @@ async def generate_licence(
     return schemas.Msg(message=__(key="licence-created-successfully"))
 
 
+@router.get("/download")
+async def download_license_file(
+        *,
+        license_uuid: str,
+        db: Session = Depends(get_db),
+        #current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
+
+    if not license_obj:
+        raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+    license_key = license_obj.license_key
+
+    file_path = f"certificats/{license_key}.txt"
+
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=__(key="file-not-found"))
+
+    # 5. Envoi du fichier pour téléchargement
+    return FileResponse(path=file_path, media_type='application/octet-stream', filename=f"{license_key}.txt")
 
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)
 async def get_licence_by_uuid(
@@ -196,3 +219,5 @@ async def get_all_licence_for_my_organisation(
         keyword=keyword,
         owner_uuid=current_user.uuid,
     )
+
+

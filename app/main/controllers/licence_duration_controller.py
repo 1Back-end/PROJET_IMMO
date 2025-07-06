@@ -10,13 +10,29 @@ from app.main.core.dependencies import TokenRequired
 
 router = APIRouter(prefix="/licence_duration", tags=["licence_duration"])
 
+@router.post("/create",response_model=schemas.Msg)
+async def create_licence_duration(
+        *,
+        db: Session = Depends(get_db),
+        obj_in:schemas.LicenceDurationCrete,
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
+):
+    crud.licence_duration.create(
+        db=db,
+        obj_in=obj_in,
+        added_by=current_user.uuid
+    )
+    return {"message": __(key="licence-duration-created-success")}
+
+
+
 @router.get("/get-all-licence-duration", response_model=None)
 async def get(
     *,
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 25,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","OWNER"]))
 ):
     return crud.licence_duration.get_many(
         db,
@@ -60,6 +76,35 @@ async def update_licence(
 ):
     crud.licence_duration.update(
         db=db,
-        obj_in=obj_in
+        obj_in=obj_in,
+        added_by=current_user.uuid
     )
     return {"message":__(key="licence-duration-updated")}
+
+
+@router.delete("/drop-delete",response_model=schemas.Msg)
+async def drop_delete_licence(
+        *,
+        db: Session = Depends(get_db),
+        obj_in:schemas.LicenceDurationDelete,
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
+):
+    crud.licence_duration.drop_delete(
+        db=db,
+        uuid=obj_in.uuid
+    )
+    return {"message":__(key="licence-duration-deleted-success")}
+
+
+@router.put("/soft-delete",response_model=schemas.Msg)
+async def soft_delete_licence(
+        *,
+        db: Session = Depends(get_db),
+        obj_in:schemas.LicenceDurationDelete,
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
+):
+    crud.licence_duration.soft_delete(
+        db=db,
+        uuid=obj_in.uuid
+    )
+    return {"message":__(key="licence-duration-deleted-success")}

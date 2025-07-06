@@ -1,4 +1,6 @@
 import math
+from datetime import datetime, timedelta
+from app.main.core.mail import send_reset_password_option2_email, send_account_confirmation_email
 import bcrypt
 from fastapi import HTTPException
 from sqlalchemy import or_
@@ -41,9 +43,10 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
 
     @classmethod
     def create(cls, db: Session, obj_in: schemas.OrganisationCreate) -> Optional[models.Organisation]:
-        import uuid
+        generated_code = str(uuid.uuid4().int)[:6]
 
-        # Création du User (propriétaire)
+        expiration = datetime.utcnow() + timedelta(minutes=30)
+
         user_uuid = str(uuid.uuid4())
         new_user = models.User(
             uuid=user_uuid,
@@ -52,7 +55,8 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             email=obj_in.owner_email,
             phone_number=obj_in.owner_phone_number,
             password_hash=get_password_hash(obj_in.owner_password),
-            role=models.UserRole.OWNER
+            role=models.UserRole.OWNER,
+            is_new_user = True
         )
         db.add(new_user)
 
@@ -98,6 +102,7 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+
 
         # Création des liens Organisation-Service pour chaque service_uuid
         for service_uuid in obj_in.service_uuids:

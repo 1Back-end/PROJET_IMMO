@@ -9,3 +9,4 @@ from .organisation_crud import *
 from .license_requests_crud import *
 from .licenses_crud import *
 from .licence_duration_crud import *
+from .licence_request_services_crud import *

@@ -55,6 +55,15 @@ translation = {
     "licence-duration-updated-status": "Statut de la durée de licence mis à jour.",
     "licence-duration-updated": "Durée de licence mise à jour avec succès.",
     "service-already-has-this-duration-license" :"Le service possède déjà une licence avec cette durée.",
-    "licence-prolonged" : "Licence prolongée avec succès"
+    "licence-prolonged" : "Licence prolongée avec succès",
+    "licence-duration-created-success" : "Durée de licence créée avec succès",
+    "licence-duration-deleted-success": "Durée de licence supprimée avec succès",
+    "dependencies-token-invalid": "Jeton de dépendances invalide",
+    "first-time-login-require-change-password": "Première connexion : changement de mot de passe requis",
+    "insufficient-permissions": "Permissions insuffisantes",
+    "dependencies-access-unauthorized": "Accès non autorisé aux dépendances",
+    "file-not-found" : "Fichier Introuvable"
+
+
 
 }

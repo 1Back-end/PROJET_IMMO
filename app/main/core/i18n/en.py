@@ -58,6 +58,13 @@ translation = {
     "licence-duration-updated" : "Licence duration updated successfully",
     "service-already-has-this-duration-license" : "Service already has this duration license",
     "licence-prolonged" : "License prolonged successfully",
+    "licence-duration-created-success" : "Licence duration created successfully",
+    "licence-duration-deleted-success" : "Licence duration deleted successfully",
+    "dependencies-token-invalid" : "Dependencies token invalid",
+    "first-time-login-require-change-password" : "First time login required to change password",
+    "insufficient-permissions" : "Insufficient permissions",
+    "dependencies-access-unauthorized" : "Dependencies access unauthorized",
+    "file-not-found" : "File not found"
 
 
 

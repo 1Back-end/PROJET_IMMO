@@ -7,3 +7,4 @@ from .organisation import *
 from .license_requests import  *
 from .licences import *
 from .licence_duration import *
+from .licence_request_services import *

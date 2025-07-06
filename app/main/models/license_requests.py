@@ -16,7 +16,7 @@ class LicenceRequest(Base):
     uuid = Column(String, primary_key=True,index=True)
 
     title = Column(String,nullable=False)
-    description = Column(String,nullable=False)
+    description = Column(String,nullable=True)
     is_deleted = Column(Boolean,nullable=False,default=False)
     is_read = Column(Boolean,nullable=False,default=False)
 

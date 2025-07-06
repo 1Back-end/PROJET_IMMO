@@ -9,10 +9,14 @@ from .organisation_controller import  router as organisation
 from .license_requests_controller import  router as license_requests
 from .licence_controller import router as licence
 from .licence_duration_controller import router as licence_duration
+from .statictics_controller import router as statictics
+from .licence_response_service_controller import  router as licence_response_service
 api_router = APIRouter()
 
 api_router.include_router(migration)
 api_router.include_router(licence_duration)
+api_router.include_router(licence_response_service)
+api_router.include_router(statictics)
 api_router.include_router(authentication)
 api_router.include_router(user)
 api_router.include_router(storage)
