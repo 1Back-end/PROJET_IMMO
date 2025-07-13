@@ -4,6 +4,11 @@ from datetime import datetime
 
 from app.main.schemas import ServiceOut, LicenceDurationSlim, UserOut
 
+class LicenceRequestServiceExtend(BaseModel):
+    service_uuid:str
+    licence_duration_uuid:str
+    description:Optional[str]
+    number_of_days : Optional[int]
 
 class LicenceRequestService(BaseModel):
     service_uuid:str
@@ -31,6 +36,7 @@ class LicenceRequestServiceResponse(BaseModel):
     creator: Optional[UserOut]=None
     status: str
     description:Optional[str]
+    number_of_days: Optional[int]
     type:Optional[str]
     created_at: datetime
     updated_at: datetime

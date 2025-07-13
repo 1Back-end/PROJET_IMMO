@@ -24,14 +24,15 @@ def register(
         avatar = crud.storage_crud.get_file_by_uuid(db=db,file_uuid=obj_in.avatar_uuid)
         if not avatar:
             raise HTTPException(status_code=404, detail=__(key="avatar-not-found"))
-    
+
     exist_phone = crud.user.get_by_phone_number(db=db, phone_number=obj_in.phone_number)
     if exist_phone:
-        raise HTTPException(status_code=409, detail=__(key="phone_number-already-used"))
+        raise HTTPException(status_code=409, detail=__(key="phone-number-already-exist"))
 
     exist_email = crud.user.get_by_email(db=db, email=obj_in.email)
     if exist_email:
-        raise HTTPException(status_code=409, detail=__(key="email-already-used"))
+        raise HTTPException(status_code=409, detail=__(key="email-already-exist"))
+
     crud.user.create(
         db, obj_in=obj_in
     )

@@ -2,6 +2,8 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+from app.main.schemas import AddedBySlim
+
 
 class LicenceDurationModel(BaseModel):
     uuid:str
@@ -9,6 +11,7 @@ class LicenceDurationModel(BaseModel):
     duration_days:int
     description:Optional[str]
     price:Optional[float]
+    creator: Optional[AddedBySlim]
     is_active:bool
     created_at:datetime
     updated_at:datetime

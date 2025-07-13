@@ -8,7 +8,7 @@ import uuid
 from app.main.core.i18n import __
 from sqlalchemy.orm import Session
 
-from app.main.core.mail import send_new_request
+from app.main.core.mail import send_new_request, send_new_request_extend
 from app.main.crud.base import CRUDBase
 from app.main import models,schemas
 from app.main.schemas import LicenceRequestCreate
@@ -22,7 +22,7 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
 
     @classmethod
     def create(cls, db: Session, *, obj_in: schemas.LicenceRequestCreate, added_by: str) -> Optional[
-        models.LicenceRequest]:
+        models.LicenceRequestService]:
         # Création de la demande de licence
         db_obj = models.LicenceRequestService(
             uuid=str(uuid.uuid4()),
@@ -58,6 +58,50 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
                 title=obj_in.type,
                 type=obj_in.type,
                 description=obj_in.description
+            )
+
+        return db_obj
+
+    @classmethod
+    def extend_licence(cls, db: Session, *, obj_in: schemas.LicenceRequestServiceExtend, added_by: str) -> Optional[
+        models.LicenceRequestService]:
+        # Création de la demande de licence
+        db_obj = models.LicenceRequestService(
+            uuid=str(uuid.uuid4()),
+            service_uuid=obj_in.service_uuid,
+            licence_duration_uuid=obj_in.licence_duration_uuid,
+            description=obj_in.description,
+            type="Nouvelle demande de prolongation de licence",
+            number_of_days=obj_in.number_of_days,
+            added_by=added_by
+        )
+        db.add(db_obj)
+
+        # Création de la notification
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title="Nouvelle demande de prolongation de licence",
+            type=" Nouvelle demande de prolongation de licence",
+            description=obj_in.description,
+            send_by=added_by
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(db_obj)
+
+        # Envoi d’email aux administrateurs
+        admins = db.query(models.User).filter(
+            models.User.is_deleted == False,
+            models.User.role.in_(["SUPER_ADMIN", "ADMIN", "EDIMESTRE"])
+        ).all()
+
+        for admin in admins:
+            send_new_request_extend(
+                email_to=admin.email,
+                title="Nouvelle demande de prolongation de licence",
+                type="Nouvelle demande de prolongation de licence",
+                description=obj_in.description,
+                number_of_days=obj_in.number_of_days
             )
 
         return db_obj

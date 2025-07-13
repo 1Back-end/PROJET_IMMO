@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ project_name }}</title>
+  <!-- Import Google Fonts Poppins -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+    body {
+      font-family: "Rubik", sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      margin: 0;
+      padding: 30px 10px;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      background-color: #fff;
+      max-width: 700px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(31, 66, 131, 0.15);
+      padding: 30px 40px;
+      box-sizing: border-box;
+    }
+    .header {
+      background-color: #1F4283;
+      color: white;
+      padding: 20px 30px;
+      border-radius: 10px 10px 0 0;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin: -30px -40px 30px -40px; /* étirer en largeur */
+      box-sizing: border-box;
+      letter-spacing: 0.03em;
+    }
+    .alert-pending {
+      background-color: #ff9800;
+      color: white;
+      padding: 15px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(255, 152, 0, 0.4);
+      font-size: 1rem;
+    }
+    .content p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin: 10px 0 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #1F4283;
+      color: white;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    footer {
+      margin-top: 35px;
+      font-size: 0.9rem;
+      color: #777;
+      text-align: center;
+      font-style: italic;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      Nouvelle demande de licence - {{ title }}
+    </div>
+
+    {% if status == "pending" %}
+    <div class="alert-pending" role="alert">
+      ⚠️ Cette demande est <strong>non traitée</strong>. Merci de la traiter rapidement.
+    </div>
+    {% endif %}
+
+    <div class="content">
+      <p>Bonjour,</p>
+      <p>Une nouvelle demande de licence a été soumise avec les détails suivants :</p>
+      <table>
+        <tr><th>Type de demande</th><td>{{ type }}</td></tr>
+        <tr><th>Propriétaire</th><td>{{ owner_name }}</td></tr>
+        <tr><th>Service</th><td>{{ service_name }}</td></tr>
+        <tr><th>Abonnement</th><td>{{ licence_duration }}</td></tr>
+        <tr><th>Description</th><td>{{ description or 'Non spécifié' }}</td></tr>
+        <tr><th>Date de soumission</th><td>{{ created_at }}</td></tr>
+        <tr><th>Statut</th><td>{{ status }}</td></tr>
+      </table>
+      <p>Merci de prendre les mesures nécessaires.</p>
+    </div>
+
+    <footer>
+      &copy; {{ project_name }} - Tous droits réservés.
+    </footer>
+  </div>
+</body>
+</html>

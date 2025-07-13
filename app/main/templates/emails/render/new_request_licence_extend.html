@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Nouvelle demande de prolongation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      background-color: #fff;
+      border: 1px solid #eaeaea;
+      padding: 20px;
+      border-radius: 6px;
+    }
+    .header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #1F4283;
+    }
+    .details {
+      margin-bottom: 15px;
+    }
+    .details strong {
+      color: #1F4283;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      {{ project_name }} - Nouvelle demande de prolongation de licence
+    </div>
+
+    <div class="details">
+      <p><strong>Titre :</strong> {{ title }}</p>
+      <p><strong>Type :</strong> {{ type }}</p>
+      <p><strong>Description :</strong> {{ description }}</p>
+      <p><strong>Nombre de jours demandés :</strong> {{ number_of_days }} jours</p>
+    </div>
+
+    <p>Veuillez traiter cette demande dans les plus brefs délais.</p>
+
+    <div class="footer">
+      Email généré automatiquement par {{ project_name }}.
+    </div>
+  </div>
+</body>
+</html>

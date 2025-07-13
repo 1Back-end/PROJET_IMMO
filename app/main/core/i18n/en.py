@@ -64,7 +64,8 @@ translation = {
     "first-time-login-require-change-password" : "First time login required to change password",
     "insufficient-permissions" : "Insufficient permissions",
     "dependencies-access-unauthorized" : "Dependencies access unauthorized",
-    "file-not-found" : "File not found"
+    "file-not-found" : "File not found",
+    "profile-updated" : "Profile updated successfully",
 
 
 

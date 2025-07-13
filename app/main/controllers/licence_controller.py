@@ -35,7 +35,6 @@ async def generate_licence(
     if not licence_duration:
         raise HTTPException(status_code=400, detail=__(key="licence-duration-not-found"))
 
-
     organisation = crud.organisation.get_by_uuid(db=db, uuid=request.organization_uuid)
     if not organisation:
         raise HTTPException(status_code=404, detail=__(key="organisation-not-found"))
@@ -57,7 +56,7 @@ async def download_license_file(
         *,
         license_uuid: str,
         db: Session = Depends(get_db),
-        #current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
 ):
     license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
 
@@ -70,7 +69,6 @@ async def download_license_file(
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=__(key="file-not-found"))
 
-    # 5. Envoi du fichier pour téléchargement
     return FileResponse(path=file_path, media_type='application/octet-stream', filename=f"{license_key}.txt")
 
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)

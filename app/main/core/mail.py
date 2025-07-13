@@ -169,6 +169,82 @@ def send_new_request(email_to: str, title:str,type:str,description:str) -> None:
     except Exception as e:
         logging.error(f"❌ Erreur lors de l'envoi de l'email : {e}")
 
+
+
+
+
+def send_new_request_extend(email_to: str, title:str,type:str,description:str,number_of_days:int) -> None:
+    try:
+        # Charger le template HTML
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "new_request_licence_extend.html"
+        html_content = Template(template_path.read_text(encoding="utf-8")).render(
+            title=title,
+            type=type,
+            description=description,
+            number_of_days = number_of_days,
+            project_name=Config.PROJECT_NAME
+        )
+
+        # Créer l'email
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.EMAILS_FROM_NAME} | Nouvelle demande de prolongation de licence"
+        msg.attach(MIMEText(html_content, "html"))
+
+        # Connexion et envoi
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi de l'email : {e}")
+
+
+def send_notify_pending_request(email_to: str,title: str,licence_type: str,owner_name: str,service_name: str,licence_duration: str,description: str,
+    created_at: str,status: str) -> None:
+    try:
+        # Charger le template HTML
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "notify_request_licence.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        # Rendre le contenu HTML avec Jinja2
+        html_content = template.render(
+            title=title,
+            type=licence_type,
+            owner_name=owner_name,
+            service_name=service_name,
+            licence_duration=licence_duration,
+            description=description,
+            created_at=created_at,
+            status=status,
+            project_name=Config.PROJECT_NAME
+        )
+
+        # Préparer l'email
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.EMAILS_FROM_NAME} | Demande de  {licence_type} non traité"
+        msg.attach(MIMEText(html_content, "html"))
+
+        # Envoyer l'email
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi de l'email : {e}")
+
 def send_account_confirmation_email(email_to: str, name: str, code: str, valid_minutes: int) -> None:
     try:
         # Charger le template HTML
@@ -198,3 +274,35 @@ def send_account_confirmation_email(email_to: str, name: str, code: str, valid_m
 
     except Exception as e:
         logging.error(f"❌ Erreur lors de l'envoi de l'email : {e}")
+
+
+def send_expiration_email(email_to: str, license_key: str, organisation_name: str, service_name: str, expires_at: str) -> None:
+    try:
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "license_expired.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            license_key=license_key,
+            organisation_name=organisation_name,
+            service_name=service_name,
+            expires_at=expires_at,
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | Votre licence est expirée"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email d'expiration envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi de l'email d'expiration : {e}")

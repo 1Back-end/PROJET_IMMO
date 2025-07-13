@@ -62,7 +62,8 @@ translation = {
     "first-time-login-require-change-password": "Première connexion : changement de mot de passe requis",
     "insufficient-permissions": "Permissions insuffisantes",
     "dependencies-access-unauthorized": "Accès non autorisé aux dépendances",
-    "file-not-found" : "Fichier Introuvable"
+    "file-not-found" : "Fichier Introuvable",
+    "profile-updated" : "Profile mis à jour succés"
 
 
 

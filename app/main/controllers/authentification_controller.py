@@ -16,9 +16,10 @@ from app.main.core.config import Config
 
 router = APIRouter(prefix="/authentification", tags=["authentification"])
 
-@router.post("/login/administrator",  response_model=schemas.UserAuthentication)
+
+@router.post("/login/administrator", response_model=schemas.UserAuthentication)
 async def login(
-        obj_in:schemas.UserLogin,
+        obj_in: schemas.UserLogin,
         db: Session = Depends(get_db),
 ) -> Any:
     """
@@ -35,9 +36,19 @@ async def login(
 
     if user.status != models.UserStatus.ACTIVED:
         raise HTTPException(status_code=402, detail=__(key="user-not-activated"))
-    
+
+    now = datetime.now()
+    if user.first_login_date is None:
+        user.first_login_date = now
+    user.last_login_date = now
+    user.connexion_counter = (user.connexion_counter or 0) + 1
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
     access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     return {
         "user": user,
         "token": {
@@ -92,7 +103,7 @@ async def update_current_user_password(
     db: Session = Depends(get_db),
     current_user: any = Depends(TokenRequired(let_new_user=True))
 ):
-    current_user = crud.user.get_by_email(db=db, email=obj_in.email)
+    user = crud.user.get_by_email(db=db, email=obj_in.email)
     if not current_user:
         raise HTTPException(status_code=404, detail=__("user-not-found"))
     # Vérifier l'ancien mot de passe
@@ -117,10 +128,10 @@ async def update_current_user_password(
     access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     return {
-        "user": current_user,
+        "user": user,
         "token": {
             "access_token": create_access_token(
-                current_user.uuid, expires_delta=access_token_expires
+                user.uuid, expires_delta=access_token_expires
             ),
             "token_type": "bearer",
         }
@@ -159,8 +170,6 @@ def start_reset_password(
     db.refresh(user)
     full_name = f"{user.first_name} {user.last_name}"
     send_reset_password_option2_email(email_to=obj_in.email,otp=code,name=full_name)
-    
-
     return schemas.Msg(message=__(key="reset-password-started"))
 
 @router.post("/check-otp-password/administrator", summary="Check OTP password", response_model=schemas.Msg)
@@ -231,3 +240,17 @@ def logout(
     db.commit()
 
     return {"message": __("Ok")}
+
+
+@router.put("/me/update", response_model=schemas.Msg)
+def update_my_profile(
+    obj_in: schemas.UserUpdateProfil,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(TokenRequired()),
+):
+    crud.user.update_profil(
+        db=db,
+        db_obj=current_user,
+        obj_in=obj_in
+    )
+    return {"message": __("profile-updated")}

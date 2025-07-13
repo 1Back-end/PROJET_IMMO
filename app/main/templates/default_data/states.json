@@ -1,0 +1,1247 @@
+[
+  {
+    "uuid": "c0bed74f-d319-422a-a3a9-331c4139ec96",
+    "code": "AF",
+    "name": "Afghanistan"
+  },
+  {
+    "uuid": "a518b913-0b6a-4ea4-b774-bfa33e16000b",
+    "code": "AX",
+    "name": "Åland Islands"
+  },
+  {
+    "uuid": "b3af0911-0b66-40df-9d89-75479e8f3b93",
+    "code": "AL",
+    "name": "Albania"
+  },
+  {
+    "uuid": "0fe102b3-1219-44f6-95b7-cd08c8ecff74",
+    "code": "DZ",
+    "name": "Algeria"
+  },
+  {
+    "uuid": "012e130d-f699-4340-9ee9-1d485384cf9c",
+    "code": "AS",
+    "name": "American Samoa"
+  },
+  {
+    "uuid": "91a1bad2-6d32-4111-bb69-63ff9c360cb6",
+    "code": "AD",
+    "name": "Andorra"
+  },
+  {
+    "uuid": "4823e27a-ff19-4515-aa98-ff6a94e335b3",
+    "code": "AO",
+    "name": "Angola"
+  },
+  {
+    "uuid": "d3ef5298-ce8c-4467-ae79-c99c27e0d1c1",
+    "code": "AI",
+    "name": "Anguilla"
+  },
+  {
+    "uuid": "cc29f7e1-2d55-4280-8e7b-43752a3b5b55",
+    "code": "AQ",
+    "name": "Antarctica"
+  },
+  {
+    "uuid": "df52e808-71a4-4b9d-908e-e77e6cdd8edb",
+    "code": "AG",
+    "name": "Antigua and Barbuda"
+  },
+  {
+    "uuid": "b3e4b46a-7ee4-49cd-9b08-16e6f6516363",
+    "code": "AR",
+    "name": "Argentina"
+  },
+  {
+    "uuid": "3084bd5c-2258-4274-816e-4dce8f01c32a",
+    "code": "AM",
+    "name": "Armenia"
+  },
+  {
+    "uuid": "a34fbfdc-1f69-4a17-b02c-89eeff7dcd71",
+    "code": "AW",
+    "name": "Aruba"
+  },
+  {
+    "uuid": "1cc8a267-2658-49c3-96ef-c5f6a2c84b87",
+    "code": "AU",
+    "name": "Australia"
+  },
+  {
+    "uuid": "cc14986c-07a6-405a-ad30-f7b39ed02699",
+    "code": "AT",
+    "name": "Austria"
+  },
+  {
+    "uuid": "485915b2-a639-44c2-9bb0-21543f1bcff6",
+    "code": "AZ",
+    "name": "Azerbaijan"
+  },
+  {
+    "uuid": "ca31932b-9b79-45dc-b579-1ebdc8d07d1b",
+    "code": "BS",
+    "name": "Bahamas"
+  },
+  {
+    "uuid": "95aa5e69-0633-4160-98db-c74c8b421d29",
+    "code": "BH",
+    "name": "Bahrain"
+  },
+  {
+    "uuid": "4c44b82d-7884-4e18-b6b8-2aa0fceb5b9c",
+    "code": "BD",
+    "name": "Bangladesh"
+  },
+  {
+    "uuid": "27cc68a1-611d-4bd3-a6db-7d68a70fcfef",
+    "code": "BB",
+    "name": "Barbados"
+  },
+  {
+    "uuid": "2d3a53aa-1dce-4ef2-b593-0844745a75d2",
+    "code": "BY",
+    "name": "Belarus"
+  },
+  {
+    "uuid": "f9224e1c-789a-477d-98e5-5e5257802888",
+    "code": "BE",
+    "name": "Belgium"
+  },
+  {
+    "uuid": "681ed85c-34ab-479a-9aac-99b79f3f5e76",
+    "code": "BZ",
+    "name": "Belize"
+  },
+  {
+    "uuid": "3b991598-0779-45f2-bf9b-c4f932acdbd5",
+    "code": "BJ",
+    "name": "Benin"
+  },
+  {
+    "uuid": "200ec0f0-faf1-42db-a038-eb840a044a82",
+    "code": "BM",
+    "name": "Bermuda"
+  },
+  {
+    "uuid": "ed5a305a-a7a1-4947-afab-054106230009",
+    "code": "BT",
+    "name": "Bhutan"
+  },
+  {
+    "uuid": "ecc7401b-5e24-4fe6-b165-997574d345a8",
+    "code": "BO",
+    "name": "Bolivia, Plurinational State of"
+  },
+  {
+    "uuid": "45da424a-5498-4e70-9bf6-69e2426b6c42",
+    "code": "BQ",
+    "name": "Bonaire, Sint Eustatius and Saba"
+  },
+  {
+    "uuid": "6a154b96-0f10-4c28-8e9e-6cae2f76919b",
+    "code": "BA",
+    "name": "Bosnia and Herzegovina"
+  },
+  {
+    "uuid": "9476e35a-10c9-4950-8c06-e817566d1dda",
+    "code": "BW",
+    "name": "Botswana"
+  },
+  {
+    "uuid": "9a73b689-354f-4d60-87c5-3f84f4096abb",
+    "code": "BV",
+    "name": "Bouvet Island"
+  },
+  {
+    "uuid": "4ed28bb9-1ae7-4ef2-916b-704001976d1e",
+    "code": "BR",
+    "name": "Brazil"
+  },
+  {
+    "uuid": "17ff16ac-b005-450d-aca3-5e3ab68dbb55",
+    "code": "IO",
+    "name": "British Indian Ocean Territory"
+  },
+  {
+    "uuid": "f39e3679-0f9a-4de3-acd0-45dac16b5773",
+    "code": "BN",
+    "name": "Brunei Darussalam"
+  },
+  {
+    "uuid": "f7d72c7a-3f6d-4b33-b225-c47f9779b204",
+    "code": "BG",
+    "name": "Bulgaria"
+  },
+  {
+    "uuid": "92be18a0-23a5-4cce-838e-3af0d1a6ffb1",
+    "code": "BF",
+    "name": "Burkina Faso"
+  },
+  {
+    "uuid": "81816996-efa9-4dff-ae26-80f39c195830",
+    "code": "BI",
+    "name": "Burundi"
+  },
+  {
+    "uuid": "2adac478-e546-46ed-afc1-ba89a22fce24",
+    "code": "KH",
+    "name": "Cambodia"
+  },
+  {
+    "uuid": "7341729e-4cee-4cc2-b12c-cf59d4a525ea",
+    "code": "CM",
+    "name": "Cameroon"
+  },
+  {
+    "uuid": "f75d867c-6b2f-47d5-8271-a2ca8fe91e4e",
+    "code": "CA",
+    "name": "Canada"
+  },
+  {
+    "uuid": "146638a5-f3f2-411a-aa76-fc57214c469a",
+    "code": "CV",
+    "name": "Cape Verde"
+  },
+  {
+    "uuid": "3d3724fe-0f5f-4dd0-bd66-e3df81d0043d",
+    "code": "KY",
+    "name": "Cayman Islands"
+  },
+  {
+    "uuid": "c0330f77-4664-42f0-913b-dae574a62ba2",
+    "code": "CF",
+    "name": "Central African Republic"
+  },
+  {
+    "uuid": "ab4f7611-a0fb-4eb1-9d45-f5bcdf744f69",
+    "code": "TD",
+    "name": "Chad"
+  },
+  {
+    "uuid": "00a8cad1-547e-4ba1-a553-9f7ddc9016e8",
+    "code": "CL",
+    "name": "Chile"
+  },
+  {
+    "uuid": "4b8a82ba-9ffc-4cad-97b5-51c7e11025e8",
+    "code": "CN",
+    "name": "China"
+  },
+  {
+    "uuid": "3bebb4cb-0e01-4ebb-a57d-150f9b09b8e0",
+    "code": "CX",
+    "name": "Christmas Island"
+  },
+  {
+    "uuid": "1e31118e-8ca6-4ca7-a935-833e627ee606",
+    "code": "CC",
+    "name": "Cocos (Keeling) Islands"
+  },
+  {
+    "uuid": "f8daa6e1-7bbc-4e5b-b7ea-8cbc7a51a745",
+    "code": "CO",
+    "name": "Colombia"
+  },
+  {
+    "uuid": "e6d57b2b-acc1-4a15-a1bc-3621b88c2f28",
+    "code": "KM",
+    "name": "Comoros"
+  },
+  {
+    "uuid": "f043e39d-a9ca-4ab7-bc6d-6c8314902358",
+    "code": "CG",
+    "name": "Congo"
+  },
+  {
+    "uuid": "dac626f0-63e0-4f68-a3f7-b3c19bd5e9a0",
+    "code": "CD",
+    "name": "Congo, the Democratic Republic of the"
+  },
+  {
+    "uuid": "106a4230-ac8f-4908-9aae-073f399235e7",
+    "code": "CK",
+    "name": "Cook Islands"
+  },
+  {
+    "uuid": "7a2dc414-fdca-4828-a9ea-129d3e576038",
+    "code": "CR",
+    "name": "Costa Rica"
+  },
+  {
+    "uuid": "ceb57ab6-6041-4e71-8a22-a90a71ac6a35",
+    "code": "CI",
+    "name": "Côte d'Ivoire"
+  },
+  {
+    "uuid": "308d8bdc-1c30-4be7-9a57-f236a4d57c49",
+    "code": "HR",
+    "name": "Croatia"
+  },
+  {
+    "uuid": "08b1810d-660d-48af-a121-6a522806a5d6",
+    "code": "CU",
+    "name": "Cuba"
+  },
+  {
+    "uuid": "3dc930cf-d1a4-44f5-adc0-b24c00b2f08e",
+    "code": "CW",
+    "name": "Curaçao"
+  },
+  {
+    "uuid": "5ae377b6-a8d2-4ba6-9ee5-255135c57f26",
+    "code": "CY",
+    "name": "Cyprus"
+  },
+  {
+    "uuid": "12633998-62a5-4bb6-a40a-eece84e1dcb9",
+    "code": "CZ",
+    "name": "Czech Republic"
+  },
+  {
+    "uuid": "c61188ab-d515-47d3-bc45-f0a20eded437",
+    "code": "DK",
+    "name": "Denmark"
+  },
+  {
+    "uuid": "57957a5d-eb79-4479-a09a-4259ecbe0ed9",
+    "code": "DJ",
+    "name": "Djibouti"
+  },
+  {
+    "uuid": "c2188be0-7a2d-4151-9778-8ab94075cbad",
+    "code": "DM",
+    "name": "Dominica"
+  },
+  {
+    "uuid": "35f3afb1-1fe3-420d-8568-7b83db3f6e1a",
+    "code": "DO",
+    "name": "Dominican Republic"
+  },
+  {
+    "uuid": "2918c0ba-227a-42e3-b461-360cedfb5f81",
+    "code": "EC",
+    "name": "Ecuador"
+  },
+  {
+    "uuid": "5f8a072a-7f5a-4f80-9791-283961bfb257",
+    "code": "EG",
+    "name": "Egypt"
+  },
+  {
+    "uuid": "45336240-e4c6-4b26-9907-8cabffd9ef34",
+    "code": "SV",
+    "name": "El Salvador"
+  },
+  {
+    "uuid": "089c4173-3f7f-43d6-a2a2-6310f6a68e1f",
+    "code": "GQ",
+    "name": "Equatorial Guinea"
+  },
+  {
+    "uuid": "9e498e76-a81b-409f-b37b-1db5429d196a",
+    "code": "ER",
+    "name": "Eritrea"
+  },
+  {
+    "uuid": "ee0637dd-4bb5-43ec-adb3-c5e93ddea63a",
+    "code": "EE",
+    "name": "Estonia"
+  },
+  {
+    "uuid": "6ca7e531-25b0-48ea-bb00-c1783cb623f0",
+    "code": "ET",
+    "name": "Ethiopia"
+  },
+  {
+    "uuid": "d355b961-11a6-4760-9689-82b664835547",
+    "code": "FK",
+    "name": "Falkland Islands (Malvinas)"
+  },
+  {
+    "uuid": "f6cac868-5abd-4fd0-ae3d-6c49d1121c33",
+    "code": "FO",
+    "name": "Faroe Islands"
+  },
+  {
+    "uuid": "da3336c0-50e4-4fe6-89a9-ca3cd28013b1",
+    "code": "FJ",
+    "name": "Fiji"
+  },
+  {
+    "uuid": "65eca27c-02cf-469b-9ecb-26cf22981d76",
+    "code": "FI",
+    "name": "Finland"
+  },
+  {
+    "uuid": "fce78ded-90a7-49df-bace-871a2fcd1e8d",
+    "code": "FR",
+    "name": "France"
+  },
+  {
+    "uuid": "850c05f8-4b1d-4594-bf9e-f5f439b928fa",
+    "code": "GF",
+    "name": "French Guiana"
+  },
+  {
+    "uuid": "16ce6035-e274-4702-9622-ad82237fcd6b",
+    "code": "PF",
+    "name": "French Polynesia"
+  },
+  {
+    "uuid": "eb85e666-cbb9-4554-8c02-05c28ce2e5a1",
+    "code": "TF",
+    "name": "French Southern Territories"
+  },
+  {
+    "uuid": "91b6955d-4be7-4c84-9205-dfba362ec3e3",
+    "code": "GA",
+    "name": "Gabon"
+  },
+  {
+    "uuid": "c2d5e276-d750-43f9-a333-0133e588e2fd",
+    "code": "GM",
+    "name": "Gambia"
+  },
+  {
+    "uuid": "d751f461-53b1-4060-b140-4206411a7f91",
+    "code": "GE",
+    "name": "Georgia"
+  },
+  {
+    "uuid": "888da404-5a2c-4b03-816c-9fcc43d93204",
+    "code": "DE",
+    "name": "Germany"
+  },
+  {
+    "uuid": "d7df139f-d6a5-47c3-aa42-f2891ddc4595",
+    "code": "GH",
+    "name": "Ghana"
+  },
+  {
+    "uuid": "92064f95-6d93-4d8e-af1b-c77a27011d2b",
+    "code": "GI",
+    "name": "Gibraltar"
+  },
+  {
+    "uuid": "40b926ad-f58f-4943-bca6-cfb3e9b28da3",
+    "code": "GR",
+    "name": "Greece"
+  },
+  {
+    "uuid": "7e941efe-f42a-4b1b-94fd-2d91d71885a8",
+    "code": "GL",
+    "name": "Greenland"
+  },
+  {
+    "uuid": "8bc1b695-79a5-4c31-91b2-ca0a5d964de8",
+    "code": "GD",
+    "name": "Grenada"
+  },
+  {
+    "uuid": "004e8a47-d621-4b48-b42d-0d75dd335326",
+    "code": "GP",
+    "name": "Guadeloupe"
+  },
+  {
+    "uuid": "efdde470-3713-4f91-bd00-089a6be020fd",
+    "code": "GU",
+    "name": "Guam"
+  },
+  {
+    "uuid": "79771ae2-0433-4e68-8d0d-bd4fb4a51b1c",
+    "code": "GT",
+    "name": "Guatemala"
+  },
+  {
+    "uuid": "20305715-8330-4ab4-9167-cd53ca33a830",
+    "code": "GG",
+    "name": "Guernsey"
+  },
+  {
+    "uuid": "2abff199-c2ba-4efe-bc31-092936da3a56",
+    "code": "GN",
+    "name": "Guinea"
+  },
+  {
+    "uuid": "ada348ab-d0a0-4296-a171-db849900126c",
+    "code": "GW",
+    "name": "Guinea-Bissau"
+  },
+  {
+    "uuid": "f4abc518-89fe-4f98-b9ee-98974b151b10",
+    "code": "GY",
+    "name": "Guyana"
+  },
+  {
+    "uuid": "5eedb843-fe74-43db-a2bf-f08bad0e6bc5",
+    "code": "HT",
+    "name": "Haiti"
+  },
+  {
+    "uuid": "a8ec85ce-374d-43db-ada3-b1e9a4f1c7c8",
+    "code": "HM",
+    "name": "Heard Island and McDonald Islands"
+  },
+  {
+    "uuid": "3ad394eb-573c-4bed-97fd-8545ae6d777a",
+    "code": "VA",
+    "name": "Holy See (Vatican City State)"
+  },
+  {
+    "uuid": "cfe7788e-4b46-429e-9b1a-d08af059ec20",
+    "code": "HN",
+    "name": "Honduras"
+  },
+  {
+    "uuid": "d4d3725d-d9ef-47c4-b7d3-7dbcd6568586",
+    "code": "HK",
+    "name": "Hong Kong"
+  },
+  {
+    "uuid": "7d1c9fa6-09ad-4e0e-bc49-f42fea589347",
+    "code": "HU",
+    "name": "Hungary"
+  },
+  {
+    "uuid": "8a7f29d2-a680-45cf-8018-0816320ee7bd",
+    "code": "IS",
+    "name": "Iceland"
+  },
+  {
+    "uuid": "61f2604e-a8c7-47b5-8738-9d205140b278",
+    "code": "IN",
+    "name": "India"
+  },
+  {
+    "uuid": "f48a26f6-4ab5-4a8d-8b58-a2a288cefdf9",
+    "code": "ID",
+    "name": "Indonesia"
+  },
+  {
+    "uuid": "48342dd2-12ef-4958-80ab-31197e4d5190",
+    "code": "IR",
+    "name": "Iran, Islamic Republic of"
+  },
+  {
+    "uuid": "b3daff91-3780-4f7e-b4e8-0eb6364133c3",
+    "code": "IQ",
+    "name": "Iraq"
+  },
+  {
+    "uuid": "dcfc8831-9275-41cb-b036-adad9c75322c",
+    "code": "IE",
+    "name": "Ireland"
+  },
+  {
+    "uuid": "22cca210-2981-4593-84b1-25255ca61eef",
+    "code": "IM",
+    "name": "Isle of Man"
+  },
+  {
+    "uuid": "fe3a468f-c3b5-4e07-961c-3ca4a8f1bcbd",
+    "code": "IL",
+    "name": "Israel"
+  },
+  {
+    "uuid": "e4eb1b9d-2253-4432-bb43-3cd811f43ede",
+    "code": "IT",
+    "name": "Italy"
+  },
+  {
+    "uuid": "2a89d104-60b3-443f-8c83-97ba0516f0ac",
+    "code": "JM",
+    "name": "Jamaica"
+  },
+  {
+    "uuid": "800f950a-1a59-4c4c-84fe-f493ef4a8810",
+    "code": "JP",
+    "name": "Japan"
+  },
+  {
+    "uuid": "afcafcfa-92d1-4329-953d-0af1bcb947d9",
+    "code": "JE",
+    "name": "Jersey"
+  },
+  {
+    "uuid": "db072474-5e94-429c-aadb-bf75fdc164d1",
+    "code": "JO",
+    "name": "Jordan"
+  },
+  {
+    "uuid": "afee9869-a069-42ee-9650-aa81d5359161",
+    "code": "KZ",
+    "name": "Kazakhstan"
+  },
+  {
+    "uuid": "dd8fee1a-d30a-4535-a192-aab2e5d178e6",
+    "code": "KE",
+    "name": "Kenya"
+  },
+  {
+    "uuid": "eb12a6f5-906e-4eb4-8d1c-981be5b94091",
+    "code": "KI",
+    "name": "Kiribati"
+  },
+  {
+    "uuid": "e6ac8b85-6b0d-4d02-bed7-d331c87618db",
+    "code": "KP",
+    "name": "Korea, Democratic People's Republic of"
+  },
+  {
+    "uuid": "1212ad98-d13b-42fc-ae66-6b0dacc72649",
+    "code": "KR",
+    "name": "Korea, Republic of"
+  },
+  {
+    "uuid": "1278ff2b-d567-4832-bc1d-43712ffbd758",
+    "code": "KW",
+    "name": "Kuwait"
+  },
+  {
+    "uuid": "eb7f82d0-35a5-4aa4-8185-7148628fb9d4",
+    "code": "KG",
+    "name": "Kyrgyzstan"
+  },
+  {
+    "uuid": "02e7990b-1128-4a53-b2a7-b7920f99d304",
+    "code": "LA",
+    "name": "Lao People's Democratic Republic"
+  },
+  {
+    "uuid": "28ee80c3-7a2c-4259-8ffa-cd1e60a53f08",
+    "code": "LV",
+    "name": "Latvia"
+  },
+  {
+    "uuid": "3c920bd5-3999-403f-ac60-a12c2161fc6b",
+    "code": "LB",
+    "name": "Lebanon"
+  },
+  {
+    "uuid": "151a5126-0ec8-4e2a-9c8e-fff74cf89a51",
+    "code": "LS",
+    "name": "Lesotho"
+  },
+  {
+    "uuid": "30123360-9bad-43ce-8d8d-5c6d37482379",
+    "code": "LR",
+    "name": "Liberia"
+  },
+  {
+    "uuid": "a64b37b4-7a04-4a74-b02e-67b149c0f02f",
+    "code": "LY",
+    "name": "Libya"
+  },
+  {
+    "uuid": "5b3b170b-2681-4c5c-86f4-2af2ddb0a648",
+    "code": "LI",
+    "name": "Liechtenstein"
+  },
+  {
+    "uuid": "8c462b4b-c102-400e-a867-8ab0d4930cea",
+    "code": "LT",
+    "name": "Lithuania"
+  },
+  {
+    "uuid": "06bdcc2d-a5b8-4edd-8c74-12c641730e67",
+    "code": "LU",
+    "name": "Luxembourg"
+  },
+  {
+    "uuid": "0c79bb1a-fe2f-4bc0-bace-39b407998eed",
+    "code": "MO",
+    "name": "Macao"
+  },
+  {
+    "uuid": "2ab8ddff-8782-46ca-b066-2b961f1b6264",
+    "code": "MK",
+    "name": "Macedonia, the Former Yugoslav Republic of"
+  },
+  {
+    "uuid": "13cf4ebe-6f49-42c7-909a-8e8ba9512df1",
+    "code": "MG",
+    "name": "Madagascar"
+  },
+  {
+    "uuid": "82194382-8128-4d8d-98bd-9393463a1228",
+    "code": "MW",
+    "name": "Malawi"
+  },
+  {
+    "uuid": "9f07c01a-a960-4d1e-8313-19e09f31c1a5",
+    "code": "MY",
+    "name": "Malaysia"
+  },
+  {
+    "uuid": "f3e61ea5-c8a4-41df-aa44-923818be30e8",
+    "code": "MV",
+    "name": "Maldives"
+  },
+  {
+    "uuid": "8871712b-8dbe-42b9-95fb-6c4e30f4f1fe",
+    "code": "ML",
+    "name": "Mali"
+  },
+  {
+    "uuid": "50454984-4408-440c-8332-8a82c2bb09fa",
+    "code": "MT",
+    "name": "Malta"
+  },
+  {
+    "uuid": "fdad444e-7ec6-47c2-b986-b66958a5c854",
+    "code": "MH",
+    "name": "Marshall Islands"
+  },
+  {
+    "uuid": "ee679ce5-462e-4d71-ac6b-ad1f3dd37431",
+    "code": "MQ",
+    "name": "Martinique"
+  },
+  {
+    "uuid": "6dd92376-1142-4218-95f8-930eba5e4404",
+    "code": "MR",
+    "name": "Mauritania"
+  },
+  {
+    "uuid": "bc08fdfa-bf25-4ae4-be6d-ac5d3349fdaa",
+    "code": "MU",
+    "name": "Mauritius"
+  },
+  {
+    "uuid": "9bd3fa66-3463-4e35-9021-84bc2521c2df",
+    "code": "YT",
+    "name": "Mayotte"
+  },
+  {
+    "uuid": "6155507c-8a06-4f1e-977d-2c2c9c71f9f0",
+    "code": "MX",
+    "name": "Mexico"
+  },
+  {
+    "uuid": "3fc44751-c435-493b-9eaa-6bcc26045716",
+    "code": "FM",
+    "name": "Micronesia, Federated States of"
+  },
+  {
+    "uuid": "4d6607d5-df92-4648-bc00-7a508507f5ca",
+    "code": "MD",
+    "name": "Moldova, Republic of"
+  },
+  {
+    "uuid": "62a8a26a-e6cd-4841-be82-ea2b54eb5da4",
+    "code": "MC",
+    "name": "Monaco"
+  },
+  {
+    "uuid": "0717e154-9c92-469b-a78c-22ae25014ecb",
+    "code": "MN",
+    "name": "Mongolia"
+  },
+  {
+    "uuid": "d7c7da79-0b2e-4180-b9ca-1c0b1c48d7cf",
+    "code": "ME",
+    "name": "Montenegro"
+  },
+  {
+    "uuid": "62267b8f-255d-461f-9cb4-88bb6b7fa0d6",
+    "code": "MS",
+    "name": "Montserrat"
+  },
+  {
+    "uuid": "a3c7c809-e82a-4ea2-bef1-445e8fabda71",
+    "code": "MA",
+    "name": "Morocco"
+  },
+  {
+    "uuid": "7b10c30a-b85d-45f2-8fe5-b520a0a3a13c",
+    "code": "MZ",
+    "name": "Mozambique"
+  },
+  {
+    "uuid": "fe8aacb9-f332-444b-9d9d-d24d48b9e038",
+    "code": "MM",
+    "name": "Myanmar"
+  },
+  {
+    "uuid": "7e3d2ac7-7669-44da-b78d-2712b3dc3d1c",
+    "code": "NA",
+    "name": "Namibia"
+  },
+  {
+    "uuid": "ff7b1e06-d37b-40c9-9b3f-7f3eaa67e082",
+    "code": "NR",
+    "name": "Nauru"
+  },
+  {
+    "uuid": "9b2a68f9-5476-4489-b973-b4e11af86085",
+    "code": "NP",
+    "name": "Nepal"
+  },
+  {
+    "uuid": "5babd9ce-878f-41f5-a253-3d42b4859b5a",
+    "code": "NL",
+    "name": "Netherlands"
+  },
+  {
+    "uuid": "9839c924-3d2c-4757-86e5-bff30326e763",
+    "code": "NC",
+    "name": "New Caledonia"
+  },
+  {
+    "uuid": "dcd1aea8-24bc-4b50-a75f-abde55be5dbf",
+    "code": "NZ",
+    "name": "New Zealand"
+  },
+  {
+    "uuid": "7f0ca486-1ef5-42d0-9540-bb1e67b9b3e8",
+    "code": "NI",
+    "name": "Nicaragua"
+  },
+  {
+    "uuid": "46b84de5-3d54-4b61-83d9-af286041a015",
+    "code": "NE",
+    "name": "Niger"
+  },
+  {
+    "uuid": "90c67957-22c5-475e-b742-c379ccd0cf24",
+    "code": "NG",
+    "name": "Nigeria"
+  },
+  {
+    "uuid": "54fdc641-78d6-4c1d-a84b-b34a2e2d6bf0",
+    "code": "NU",
+    "name": "Niue"
+  },
+  {
+    "uuid": "ddcd5bdd-bde1-4713-b7e3-5b230a6779ae",
+    "code": "NF",
+    "name": "Norfolk Island"
+  },
+  {
+    "uuid": "9c74f840-2e9d-463a-be9c-f676f561c153",
+    "code": "MP",
+    "name": "Northern Mariana Islands"
+  },
+  {
+    "uuid": "f382211b-d8d4-425f-bc08-2231c6aefca6",
+    "code": "NO",
+    "name": "Norway"
+  },
+  {
+    "uuid": "22ccc3c9-563d-4203-b3f9-9706bf3d664d",
+    "code": "OM",
+    "name": "Oman"
+  },
+  {
+    "uuid": "f98bd9e1-ec73-4bb7-9a02-6a54005d9a88",
+    "code": "PK",
+    "name": "Pakistan"
+  },
+  {
+    "uuid": "3e589c5f-bd3c-4cc7-82dc-3b699d00dc47",
+    "code": "PW",
+    "name": "Palau"
+  },
+  {
+    "uuid": "aa1d2223-b97a-4374-b04f-181cd9c1316d",
+    "code": "PS",
+    "name": "Palestine, State of"
+  },
+  {
+    "uuid": "d9ca0fea-08a0-4983-97d4-135ffa416c03",
+    "code": "PA",
+    "name": "Panama"
+  },
+  {
+    "uuid": "1b78dff6-78ea-4ce6-9899-4cd52fd3634f",
+    "code": "PG",
+    "name": "Papua New Guinea"
+  },
+  {
+    "uuid": "3d1025db-cd9f-442e-9648-b1c4b86b701b",
+    "code": "PY",
+    "name": "Paraguay"
+  },
+  {
+    "uuid": "9d576d52-8bc9-47fa-bf05-a901c4b73dc2",
+    "code": "PE",
+    "name": "Peru"
+  },
+  {
+    "uuid": "7a9bf0f0-9cf5-4f04-913e-c9c6e6daed51",
+    "code": "PH",
+    "name": "Philippines"
+  },
+  {
+    "uuid": "1e5bf60f-9cb2-4947-933d-de3575bb1db7",
+    "code": "PN",
+    "name": "Pitcairn"
+  },
+  {
+    "uuid": "16af2b0f-43e9-4d8a-b7f8-15aa8aef1f48",
+    "code": "PL",
+    "name": "Poland"
+  },
+  {
+    "uuid": "da52f60b-b651-44fe-b29b-8652cf245b81",
+    "code": "PT",
+    "name": "Portugal"
+  },
+  {
+    "uuid": "d88d13ae-702e-4e4f-9968-60c453a07500",
+    "code": "PR",
+    "name": "Puerto Rico"
+  },
+  {
+    "uuid": "697108bd-c739-44db-85a4-d4843045a886",
+    "code": "QA",
+    "name": "Qatar"
+  },
+  {
+    "uuid": "afe381f7-f081-4874-b5aa-d86b304c713d",
+    "code": "RE",
+    "name": "Réunion"
+  },
+  {
+    "uuid": "37de5030-b61b-429c-8d3f-1a3421de5cb1",
+    "code": "RO",
+    "name": "Romania"
+  },
+  {
+    "uuid": "c3d3b130-a7d4-496d-b02d-1f3013d714c2",
+    "code": "RU",
+    "name": "Russian Federation"
+  },
+  {
+    "uuid": "e4be00ee-e5cd-4e87-b185-9415f092c17e",
+    "code": "RW",
+    "name": "Rwanda"
+  },
+  {
+    "uuid": "a5c02b8a-49e9-4d52-8b34-8b6a58d2f43d",
+    "code": "BL",
+    "name": "Saint Barthélemy"
+  },
+  {
+    "uuid": "910b654d-3f82-4607-b2d0-757dc2b3c593",
+    "code": "SH",
+    "name": "Saint Helena, Ascension and Tristan da Cunha"
+  },
+  {
+    "uuid": "12aa39cb-ce62-42c9-897a-4329082f7869",
+    "code": "KN",
+    "name": "Saint Kitts and Nevis"
+  },
+  {
+    "uuid": "7ce01248-0da0-43d6-85ea-83a9aef55044",
+    "code": "LC",
+    "name": "Saint Lucia"
+  },
+  {
+    "uuid": "fe227896-2521-449d-aae9-efaa455d6de5",
+    "code": "MF",
+    "name": "Saint Martin (French part)"
+  },
+  {
+    "uuid": "a613c5bd-a155-4420-962f-791555fce235",
+    "code": "PM",
+    "name": "Saint Pierre and Miquelon"
+  },
+  {
+    "uuid": "3c7c29d4-83c8-4647-9ac0-eeca39d9dc48",
+    "code": "VC",
+    "name": "Saint Vincent and the Grenadines"
+  },
+  {
+    "uuid": "9ff9ff5b-6f8d-4a33-aae3-42f8c19027b1",
+    "code": "WS",
+    "name": "Samoa"
+  },
+  {
+    "uuid": "04428f0b-1827-4414-9a6a-e0a8f6f23a7e",
+    "code": "SM",
+    "name": "San Marino"
+  },
+  {
+    "uuid": "8b3c6548-6d8a-403d-a47f-cf2ae9ef19ab",
+    "code": "ST",
+    "name": "Sao Tome and Principe"
+  },
+  {
+    "uuid": "fd8da77a-a25e-4782-8df1-fe16c26d19a7",
+    "code": "SA",
+    "name": "Saudi Arabia"
+  },
+  {
+    "uuid": "c7146c4f-b966-42a8-8d76-3d227cac8bcf",
+    "code": "SN",
+    "name": "Senegal"
+  },
+  {
+    "uuid": "e4b4c156-4ebc-4d19-958e-6a2f747b6639",
+    "code": "RS",
+    "name": "Serbia"
+  },
+  {
+    "uuid": "80e0702e-b17c-4239-b996-b022368f10df",
+    "code": "SC",
+    "name": "Seychelles"
+  },
+  {
+    "uuid": "14b5ed05-fd94-4223-ae37-d7a6b9c7ce75",
+    "code": "SL",
+    "name": "Sierra Leone"
+  },
+  {
+    "uuid": "d7782e94-307f-4528-9101-fccab1553417",
+    "code": "SG",
+    "name": "Singapore"
+  },
+  {
+    "uuid": "a36ca9c0-1c24-405a-a0c4-bf766a46c1c0",
+    "code": "SX",
+    "name": "Sint Maarten (Dutch part)"
+  },
+  {
+    "uuid": "d7f3b932-170a-4859-816e-d053d4e4c5b8",
+    "code": "SK",
+    "name": "Slovakia"
+  },
+  {
+    "uuid": "3781751e-4d37-4d71-ba58-41d09285732b",
+    "code": "SI",
+    "name": "Slovenia"
+  },
+  {
+    "uuid": "af16d647-12b2-45fa-9910-90c0eb941d04",
+    "code": "SB",
+    "name": "Solomon Islands"
+  },
+  {
+    "uuid": "07b96602-7893-4604-9cd2-36b41b5544ca",
+    "code": "SO",
+    "name": "Somalia"
+  },
+  {
+    "uuid": "7e8fe809-428b-46a6-a963-9716225e8f25",
+    "code": "ZA",
+    "name": "South Africa"
+  },
+  {
+    "uuid": "f7d95e37-29cc-40e3-a690-00443e38be75",
+    "code": "GS",
+    "name": "South Georgia and the South Sandwich Islands"
+  },
+  {
+    "uuid": "3c133bc8-5cb3-45ea-b2f2-d711b296b00e",
+    "code": "SS",
+    "name": "South Sudan"
+  },
+  {
+    "uuid": "54f42d1d-f050-4b1e-b122-45acd6687232",
+    "code": "ES",
+    "name": "Spain"
+  },
+  {
+    "uuid": "9bac5464-1f1c-4843-8736-56611cbbf7d6",
+    "code": "LK",
+    "name": "Sri Lanka"
+  },
+  {
+    "uuid": "32e45c39-a56c-463b-ae84-31374169eed0",
+    "code": "SD",
+    "name": "Sudan"
+  },
+  {
+    "uuid": "d93f39ab-7e38-48a5-98e8-06c265e9b090",
+    "code": "SR",
+    "name": "Suriname"
+  },
+  {
+    "uuid": "f020817a-fb15-495b-82f9-db3666476a4d",
+    "code": "SJ",
+    "name": "Svalbard and Jan Mayen"
+  },
+  {
+    "uuid": "d634c19f-d9f2-4dcb-84fe-ab0ea6f6957b",
+    "code": "SZ",
+    "name": "Eswatini"
+  },
+  {
+    "uuid": "f9232844-6b53-42dd-b6a8-3f87c99df7d2",
+    "code": "SE",
+    "name": "Sweden"
+  },
+  {
+    "uuid": "2ed803e7-fb6b-4f75-b572-4646daf63aa8",
+    "code": "CH",
+    "name": "Switzerland"
+  },
+  {
+    "uuid": "b3a813f4-e943-4096-b85e-844b7b530ccf",
+    "code": "SY",
+    "name": "Syrian Arab Republic"
+  },
+  {
+    "uuid": "01e4d2b6-53f3-453e-ae34-6469735b29cb",
+    "code": "TW",
+    "name": "Taiwan, Province of China"
+  },
+  {
+    "uuid": "045f4711-6f61-44c0-bb9d-7a9a58ea01a1",
+    "code": "TJ",
+    "name": "Tajikistan"
+  },
+  {
+    "uuid": "3a8f30d7-d283-4980-8b0c-7dde4aa9d9a0",
+    "code": "TZ",
+    "name": "Tanzania, United Republic of"
+  },
+  {
+    "uuid": "130650ab-2998-409c-a31b-a34a4f6975a8",
+    "code": "TH",
+    "name": "Thailand"
+  },
+  {
+    "uuid": "64b05c2b-046e-4145-a6d7-565f070ce061",
+    "code": "TL",
+    "name": "Timor-Leste"
+  },
+  {
+    "uuid": "59b365f0-5df5-4ff1-9450-c6e64260a59f",
+    "code": "TG",
+    "name": "Togo"
+  },
+  {
+    "uuid": "53b3825b-b5e3-4be8-9277-e37be99a9989",
+    "code": "TK",
+    "name": "Tokelau"
+  },
+  {
+    "uuid": "4df9c097-6942-4704-be94-310322c7da52",
+    "code": "TO",
+    "name": "Tonga"
+  },
+  {
+    "uuid": "30726f87-3d62-4564-9097-4bd035d0202e",
+    "code": "TT",
+    "name": "Trinidad and Tobago"
+  },
+  {
+    "uuid": "62a3d691-3122-494d-9117-f0c980f7ea18",
+    "code": "TN",
+    "name": "Tunisia"
+  },
+  {
+    "uuid": "2e02f8f4-3075-4d44-83de-9bcac5dd3056",
+    "code": "TR",
+    "name": "Turkey"
+  },
+  {
+    "uuid": "350686e9-3d4c-4d00-899d-c84bacdbcd20",
+    "code": "TM",
+    "name": "Turkmenistan"
+  },
+  {
+    "uuid": "0bef47e9-1fc9-430c-8ca5-dfbe14c4e875",
+    "code": "TC",
+    "name": "Turks and Caicos Islands"
+  },
+  {
+    "uuid": "6096498b-30e9-4ffc-b173-a7dfa78cbb50",
+    "code": "TV",
+    "name": "Tuvalu"
+  },
+  {
+    "uuid": "6d62cfdd-87f3-4f6f-add5-b442dcc141c2",
+    "code": "UG",
+    "name": "Uganda"
+  },
+  {
+    "uuid": "4fbe51db-f687-4612-a5bd-9c73ab293e9b",
+    "code": "UA",
+    "name": "Ukraine"
+  },
+  {
+    "uuid": "03434e77-339a-4bcf-8f11-399a287b5c48",
+    "code": "AE",
+    "name": "United Arab Emirates"
+  },
+  {
+    "uuid": "9d6d9876-a103-4b81-9ed0-f0ec998e8bd4",
+    "code": "GB",
+    "name": "United Kingdom"
+  },
+  {
+    "uuid": "9eb0ba6c-2c9c-4710-9f62-c8ed82972dc5",
+    "code": "US",
+    "name": "United States"
+  },
+  {
+    "uuid": "b5ec8352-78a9-4077-aef6-a990e49bd08d",
+    "code": "UM",
+    "name": "United States Minor Outlying Islands"
+  },
+  {
+    "uuid": "99fc4180-236d-4b0a-bbd0-667ec7b0496e",
+    "code": "UY",
+    "name": "Uruguay"
+  },
+  {
+    "uuid": "08155dc6-f6ab-43b6-8fbe-bb3e5b16d7ef",
+    "code": "UZ",
+    "name": "Uzbekistan"
+  },
+  {
+    "uuid": "d085b5e1-881a-4fdb-8496-f806e4b77c93",
+    "code": "VU",
+    "name": "Vanuatu"
+  },
+  {
+    "uuid": "bac6d1bc-a77f-443f-a287-02c1520ee2ed",
+    "code": "VE",
+    "name": "Venezuela, Bolivarian Republic of"
+  },
+  {
+    "uuid": "8fba1013-2ee4-4530-adfd-090e2caffaa4",
+    "code": "VN",
+    "name": "Viet Nam"
+  },
+  {
+    "uuid": "10d0abff-2157-4d2f-84fb-f756793ffb70",
+    "code": "VG",
+    "name": "Virgin Islands, British"
+  },
+  {
+    "uuid": "893e9ff5-03a6-4ec1-91f2-9ba11905af67",
+    "code": "VI",
+    "name": "Virgin Islands, U.S."
+  },
+  {
+    "uuid": "26f45b95-f3d3-4109-bf9d-857330f72251",
+    "code": "WF",
+    "name": "Wallis and Futuna"
+  },
+  {
+    "uuid": "da382352-4624-4b7d-b9b6-f06385ac2d33",
+    "code": "EH",
+    "name": "Western Sahara"
+  },
+  {
+    "uuid": "57012a6f-040a-486f-9195-5942f481b289",
+    "code": "YE",
+    "name": "Yemen"
+  },
+  {
+    "uuid": "298ecb56-f09f-4897-a31f-c736c2eb3397",
+    "code": "ZM",
+    "name": "Zambia"
+  },
+  {
+    "uuid": "c7b81ce5-7dae-48a4-be1e-1c53345f5836",
+    "code": "ZW",
+    "name": "Zimbabwe"
+  }
+]

@@ -24,7 +24,7 @@ class AddedBySlim(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class UserBase(BaseModel):
-    email:EmailStr
+    email:str
     phone_number:str
     first_name:str
     last_name:str
@@ -45,6 +45,16 @@ class UserUpdate(BaseModel):
     avatar_uuid:Optional[str]=None
     model_config = ConfigDict(from_attributes=True)
 
+
+class UserUpdateProfil(BaseModel):
+    email:Optional[EmailStr]=None
+    phone_number:Optional[str]=None
+    first_name:Optional[str]=None
+    last_name:Optional[str]=None
+    login:Optional[str]=None
+    avatar_uuid:Optional[str]=None
+    model_config = ConfigDict(from_attributes=True)
+
 class UserResponseInfo(BaseModel):
     uuid:str
     email:str
@@ -53,6 +63,9 @@ class UserResponseInfo(BaseModel):
     last_name:str
     role:str
     login:Optional[str]=None
+    first_login_date : Optional[datetime]=None
+    last_login_date : Optional[datetime]=None
+    connexion_counter : Optional[int]=None
     is_new_user :Optional[bool]=None
     avatar:Optional[FileSlim2]=None
     model_config = ConfigDict(from_attributes=True)
@@ -101,7 +114,7 @@ class UserDetail(User):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 class UserProfile(BaseModel):

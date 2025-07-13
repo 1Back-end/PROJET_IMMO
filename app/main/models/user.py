@@ -27,7 +27,7 @@ class User(Base):
     __tablename__ = "users"
 
     uuid = Column(String, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, index=True, nullable=False)
     phone_number = Column(String(20), nullable=False, default="", index=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)

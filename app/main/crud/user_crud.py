@@ -9,7 +9,7 @@ from app.main.core.i18n import __  # Pour la traduction / gestion des messages d
 from app.main.core.security import generate_password, get_password_hash, verify_password  # Fonctions de gestion de mot de passe
 from sqlalchemy.orm import Session
 from app.main.crud.base import CRUDBase  # Base CRUD générique
-from app.main import models, schemas
+from app.main import models, schemas,crud
 from app.main.core.mail import send_account_creation_email  # Envoi mail à la création de compte
 
 
@@ -31,6 +31,7 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
     def create(cls, db: Session, *, obj_in: schemas.UserCreate) -> models.User:
         password: str = generate_password(8, 8)
         print(f"User password: {password}")
+
         new_user = models.User(
             uuid=str(uuid.uuid4()),
             email=obj_in.email,
@@ -70,6 +71,21 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         db_obj.avatar_uuid = obj_in.avatar_uuid if obj_in.avatar_uuid else db_obj.avatar_uuid
 
         db.flush()
+        db.commit()
+        db.refresh(db_obj)
+
+        return db_obj
+
+    @classmethod
+    def update_profil(cls, db: Session, *, db_obj: models.User, obj_in: schemas.UserUpdateProfil) -> Optional[models.User]:
+        db_obj.first_name = obj_in.first_name or db_obj.first_name
+        db_obj.last_name = obj_in.last_name or db_obj.last_name
+        db_obj.email = obj_in.email or db_obj.email
+        db_obj.phone_number = obj_in.phone_number or db_obj.phone_number
+        db_obj.login = obj_in.login or db_obj.login
+        db_obj.avatar_uuid = obj_in.avatar_uuid or db_obj.avatar_uuid
+
+        db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
 

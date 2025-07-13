@@ -26,6 +26,8 @@ class LicenceRequestService(Base):
 
     type = Column(String, nullable=False)
 
+    number_of_days = Column(Integer, nullable=True)
+
     added_by = Column(String, ForeignKey("users.uuid"), nullable=False)
     creator = relationship("User", foreign_keys=[added_by], backref="licence_request_services")
 

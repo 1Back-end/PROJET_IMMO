@@ -13,7 +13,7 @@ from fastapi import Query
 router = APIRouter(prefix="/organisations", tags=["organisations"])
 
 
-@router.post("/create",response_model=schemas.Msg)
+@router.post("/create",response_model=schemas.Msg,status_code=201)
 async def create_organisation(
         *,
         db: Session = Depends(get_db),
@@ -37,7 +37,7 @@ async def create_organisation(
 
     exist_owner_phone_number = crud.user.get_by_phone_number(db=db,phone_number=obj_in.owner_phone_number)
     if exist_owner_phone_number :
-        raise HTTPException(status_code=404,detail=__(key="the-owner-phone-number-already-exists"))
+        raise HTTPException(status_code=409,detail=__(key="the-owner-phone-number-already-exists"))
 
     service_uuids = obj_in.service_uuids
     services = crud.services.get_by_uuids(db=db, uuids=service_uuids)
@@ -48,7 +48,7 @@ async def create_organisation(
     crud.organisation.create(db=db, obj_in=obj_in)
     return schemas.Msg(message=__(key="organisation-created-successfully"))
 
-@router.put("/update-status",response_model=schemas.Msg)
+@router.put("/update-status",response_model=schemas.Msg,status_code=200)
 async def update_organisation_status(
         *,
         db: Session = Depends(get_db),
@@ -66,7 +66,7 @@ async def update_organisation_status(
     return schemas.Msg(message=__(key="organisation-status-updated-successfully"))
 
 
-@router.get("/get_all_services", response_model=None)
+@router.get("/get_all_services", response_model=None,status_code=200)
 async def get_all_services(
     *,
     db: Session = Depends(get_db),
@@ -89,7 +89,7 @@ async def get_all_services(
     )
 
 
-@router.get("/get_all_services_for_my_organisations", response_model=None)
+@router.get("/get_all_services_for_my_organisations", response_model=None,status_code=200)
 async def get_all_services(
     *,
     db: Session = Depends(get_db),
