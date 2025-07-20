@@ -242,15 +242,27 @@ def logout(
     return {"message": __("Ok")}
 
 
-@router.put("/me/update", response_model=schemas.Msg)
+@router.put("/me/update")
 def update_my_profile(
     obj_in: schemas.UserUpdateProfil,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(TokenRequired()),
 ):
-    crud.user.update_profil(
+    user = crud.user.update_profil(
         db=db,
         db_obj=current_user,
         obj_in=obj_in
     )
-    return {"message": __("profile-updated")}
+
+    access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    return {
+        "message": "Profil mis à jour avec succès.",
+        "user": user,
+        "token": {
+            "access_token": create_access_token(
+                user.uuid, expires_delta=access_token_expires
+            ),
+            "token_type": "bearer",
+        }
+    }

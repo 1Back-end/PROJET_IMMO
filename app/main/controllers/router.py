@@ -11,6 +11,7 @@ from .licence_controller import router as licence
 from .licence_duration_controller import router as licence_duration
 from .statictics_controller import router as statictics
 from .licence_response_service_controller import  router as licence_response_service
+from .country_with_city_controller import router as country_with_citys
 api_router = APIRouter()
 
 api_router.include_router(migration)
@@ -25,3 +26,4 @@ api_router.include_router(services)
 api_router.include_router(organisation)
 api_router.include_router(license_requests)
 api_router.include_router(licence)
+api_router.include_router(country_with_citys)

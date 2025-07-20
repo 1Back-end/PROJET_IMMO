@@ -2,7 +2,8 @@ from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
-from app.main.schemas import AddressSlim, AddedBy, ServiceOut, OrganisationOwnerServiceOut
+from app.main.schemas import AddedBy, OrganisationOwnerServiceOut
+from app.main.schemas.contry_with_city import CountrySlim, CitySlim
 
 
 class OrganisationBase(BaseModel):
@@ -18,15 +19,17 @@ class OrganisationBase(BaseModel):
     company_description :Optional[str]=None
 
 
-    company_country :Optional[str]=None
-    company_city :Optional[str]=None
-    company_state :Optional[str]=None
-    company_zipcode :Optional[str]=None
+    country_uuid : Optional[str]=None
+    city_uuid : Optional[str]=None
 
 
 class OrganisationCreate(OrganisationBase):
     service_uuids: List[str]
 
+
+class OrganisationValidateAccount(BaseModel):
+    email: str
+    code_otp:str
 
 class OrganisationUpdate(BaseModel):
     company_name: Optional[str] = None
@@ -34,10 +37,8 @@ class OrganisationUpdate(BaseModel):
     company_phone_number: Optional[str] = None
     company_description: Optional[str] = None
 
-    company_country: Optional[str] = None
-    company_city: Optional[str] = None
-    company_state: Optional[str] = None
-    company_zipcode: Optional[str] = None
+    country_uuid: Optional[str] = None
+    city_uuid: Optional[str] = None
 
 
 class OrganisationOut(BaseModel):
@@ -46,7 +47,8 @@ class OrganisationOut(BaseModel):
     email: str
     phone_number: str
     description: Optional[str]
-    address: Optional[AddressSlim]
+    country: Optional[CountrySlim]
+    city : Optional[CitySlim]
     owner: Optional[AddedBy]
     owner_services: List[OrganisationOwnerServiceOut]  # <-- liste de rel linkée au service
     status: str

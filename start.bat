@@ -6,12 +6,12 @@
 
 
 {
-    "login" : "admin@example.com"
+    "login" : "test@gmail.com"
     "password" : "Admin@12345"
 }
 
 {
-    "login" :"bamec94167@ofacer.com",
+    "login" :"wambazoko@gmail.com",
     "password" : "Admin@12345"
 
 }

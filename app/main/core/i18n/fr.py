@@ -63,7 +63,18 @@ translation = {
     "insufficient-permissions": "Permissions insuffisantes",
     "dependencies-access-unauthorized": "Accès non autorisé aux dépendances",
     "file-not-found" : "Fichier Introuvable",
-    "profile-updated" : "Profile mis à jour succés"
+    "profile-updated" : "Profile mis à jour succés",
+    "country-not-found": "Pays introuvable",
+   "country-created-successfully": "Pays créé avec succès",
+   "country-is-already-exists": "Le pays existe déjà",
+   "country-updated-successfully": "Pays mis à jour avec succès",
+   "country-delete-successfully": "Pays supprimé avec succès",
+   "city-not-found-for-country": "Aucune ville trouvée pour ce pays",
+   "organisation-created-successfully": "Organisation créée avec succès",
+    "city-not-found" : "Ville introuvable",
+   "the-validation-account-otp-expired": "Le code OTP de validation est expiré ou manquant.",
+   "the-validation-account-otp-invalid": "Le code OTP de validation est invalide.",
+   "organisation-validated-successfully": "L'organisation a été validée avec succès."
 
 
 

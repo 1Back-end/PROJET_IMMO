@@ -66,7 +66,16 @@ translation = {
     "dependencies-access-unauthorized" : "Dependencies access unauthorized",
     "file-not-found" : "File not found",
     "profile-updated" : "Profile updated successfully",
-
+    "country-not-found" : "Country not found.",
+    "country-created-successfully" : "Country created successfully",
+    "country-is-already-exists" : "Country already exists.",
+    "country-updated-successfully" : "Country updated successfully",
+    "country-delete-successfully" : "Country deleted successfully",
+    "city-not-found-for-country" : "City not found for this contry",
+    "city-not-found" : "City not found",
+    "the-validation-account-otp-expired": "The validation OTP has expired or is missing.",
+    "the-validation-account-otp-invalid": "The validation OTP is invalid.",
+    "organisation-validated-successfully": "Organization has been successfully validated."
 
 
 }

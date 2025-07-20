@@ -1,5 +1,6 @@
 import smtplib
 import logging
+from datetime import datetime
 from email import encoders
 from email.mime.base import MIMEBase
 from pathlib import Path
@@ -306,3 +307,95 @@ def send_expiration_email(email_to: str, license_key: str, organisation_name: st
 
     except Exception as e:
         logging.error(f"❌ Erreur lors de l'envoi de l'email d'expiration : {e}")
+
+
+def notify_new_company(email_to: str, title:str,description:str,created_by:str) -> None:
+    try:
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "notify_new_company.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            title=title,
+            description=description,
+            created_by=created_by,
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | Nouvelle entreprise crée"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email d'expiration envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi de l'email d'expiration : {e}")
+
+
+def send_organisation_otp(email_to: str, otp: str, expirate_at: datetime) -> None:
+    try:
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "validate_organisation_otp.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            otp=otp,
+            expirate_at=expirate_at.strftime("%d/%m/%Y à %H:%M"),
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | Code de validation d'organisation"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email OTP envoyé à {email_to}")
+    except Exception as e:
+        logging.error(f"❌ Erreur lors de l'envoi de l'email OTP : {e}")
+
+
+
+def send_organisation_otp_to_user(email_to: str, otp: str, expirate_at: datetime) -> None:
+    try:
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "validate_organisation_otp_code.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            otp=otp,
+            expirate_at=expirate_at.strftime("%d/%m/%Y à %H:%M"),
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | Vérification de votre organisation"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email de vérification envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur envoi OTP à {email_to} : {e}")
+

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Code de vérification</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333; background-color: #f6f6f6; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px #ccc;">
+        <h2 style="color: #1F4283;">{{ project_name }} - Vérification de votre organisation</h2>
+        <p>Bonjour,</p>
+        <p>Merci d'avoir créé votre organisation sur <strong>{{ project_name }}</strong>.</p>
+        <p>Voici votre code OTP de validation :</p>
+
+        <div style="font-size: 24px; font-weight: bold; color: #1F4283; margin: 20px 0;">
+            🔐 {{ otp }}
+        </div>
+
+        <p>Ce code expire le <strong>{{ expirate_at }}</strong>.</p>
+        <p>Si vous n’avez pas initié cette action, ignorez cet e-mail.</p>
+
+        <p>Cordialement,<br>L’équipe {{ project_name }}</p>
+    </div>
+</body>
+</html>

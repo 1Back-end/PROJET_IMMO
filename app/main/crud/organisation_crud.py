@@ -1,18 +1,16 @@
 import math
 from datetime import datetime, timedelta
-from app.main.core.mail import send_reset_password_option2_email, send_account_confirmation_email
-import bcrypt
-from fastapi import HTTPException
+import random
+from app.main.core.mail import notify_new_company,send_organisation_otp
+from fastapi import HTTPException, BackgroundTasks
 from sqlalchemy import or_
-import re
 from typing import List, Optional, Union
 import uuid
 from app.main.core.i18n import __
 from sqlalchemy.orm import Session, joinedload
 from app.main.crud.base import CRUDBase
 from app.main import models,schemas
-from app.main.schemas import OrganisationBase
-from app.main.core.security import get_password_hash, verify_password
+from app.main.core.security import get_password_hash, verify_password, generate_code
 
 
 class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,schemas.OrganisationCreate]):
@@ -42,11 +40,8 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
         return db.query(models.Organisation).filter(models.Organisation.phone_number==phone_number,models.Organisation.is_deleted==False).first()
 
     @classmethod
-    def create(cls, db: Session, obj_in: schemas.OrganisationCreate) -> Optional[models.Organisation]:
-        generated_code = str(uuid.uuid4().int)[:6]
-
-        expiration = datetime.utcnow() + timedelta(minutes=30)
-
+    def create(cls, db: Session, obj_in: schemas.OrganisationCreate, background_tasks: BackgroundTasks) -> Optional[
+        models.Organisation]:
         user_uuid = str(uuid.uuid4())
         new_user = models.User(
             uuid=user_uuid,
@@ -56,22 +51,10 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             phone_number=obj_in.owner_phone_number,
             password_hash=get_password_hash(obj_in.owner_password),
             role=models.UserRole.OWNER,
-            is_new_user = True
+            is_new_user=False
         )
         db.add(new_user)
 
-        # Création de l'adresse
-        address_uuid = str(uuid.uuid4())
-        new_address = models.Address(
-            uuid=address_uuid,
-            country=obj_in.company_country,
-            city=obj_in.company_city,
-            state=obj_in.company_state,
-            zipcode=obj_in.company_zipcode
-        )
-        db.add(new_address)
-
-        # Création de la notification
         new_notification = models.LicenceRequest(
             uuid=str(uuid.uuid4()),
             title="Création d'une organisation",
@@ -81,43 +64,68 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
         )
         db.add(new_notification)
 
-        # Commit des trois premières entités
         db.commit()
         db.refresh(new_user)
-        db.refresh(new_address)
         db.refresh(new_notification)
 
-        # Création de l'organisation
-        organisation_uuid = str(uuid.uuid4())
-        db_obj = models.Organisation(
-            uuid=organisation_uuid,
+        # Génération OTP
+        code = generate_code(length=12)
+        otp_code = str(code[0:6])
+        print(f"OTP code: {otp_code}")
+        otp_expiration = datetime.utcnow() + timedelta(days=1)
+
+        new_org = models.Organisation(
+            uuid=str(uuid.uuid4()),
             name=obj_in.company_name,
             email=obj_in.company_email,
             phone_number=obj_in.company_phone_number,
             description=obj_in.company_description,
-            address_uuid=address_uuid,
+            country_uuid=obj_in.country_uuid,
+            city_uuid=obj_in.city_uuid,
             owner_uuid=user_uuid,
-            status=models.OrganisationStatus.inactive
+            status=models.OrganisationStatus.inactive,
+            validation_account_otp=otp_code,
+            validation_otp_expirate_at=otp_expiration,
         )
-        db.add(db_obj)
+        db.add(new_org)
         db.commit()
-        db.refresh(db_obj)
+        db.refresh(new_org)
 
-
-        # Création des liens Organisation-Service pour chaque service_uuid
         for service_uuid in obj_in.service_uuids:
             link = models.OrganisationOwnerService(
                 uuid=str(uuid.uuid4()),
-                owner_uuid=new_user.uuid,
-                organisation_uuid=db_obj.uuid,
+                owner_uuid=user_uuid,
+                organisation_uuid=new_org.uuid,
                 service_uuid=service_uuid
             )
             db.add(link)
 
-        # Commit final des liens
         db.commit()
 
-        return db_obj
+        # Envoi email OTP
+        background_tasks.add_task(
+            send_organisation_otp,
+            email_to=new_user.email,
+            otp=otp_code,
+            expirate_at=otp_expiration
+        )
+
+        # Notifications admin
+        admins = db.query(models.User).filter(
+            models.User.is_deleted == False,
+            models.User.role.in_(["ADMIN", "EDIMESTRE", "SUPER_ADMIN"])
+        ).all()
+
+        for admin in admins:
+            background_tasks.add_task(
+                notify_new_company,
+                email_to=admin.email,
+                title="Création d'une organisation",
+                description=f"Une nouvelle organisation '{obj_in.company_name}'",
+                created_by=f"{new_user.first_name} {new_user.last_name}"
+            )
+
+        return new_org
 
     @classmethod
     def get_many(
@@ -132,7 +140,6 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
     ):
         record_query = db.query(models.Organisation).options(
             joinedload(models.Organisation.owner_services).joinedload(models.OrganisationOwnerService.service),
-            joinedload(models.Organisation.address),
             joinedload(models.Organisation.owner)
         ).filter(
             models.Organisation.is_deleted == False
@@ -185,7 +192,6 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
     ):
         record_query = db.query(models.Organisation).options(
             joinedload(models.Organisation.owner_services).joinedload(models.OrganisationOwnerService.service),
-            joinedload(models.Organisation.address),
             joinedload(models.Organisation.owner)
         ).filter(
             models.Organisation.is_deleted == False,

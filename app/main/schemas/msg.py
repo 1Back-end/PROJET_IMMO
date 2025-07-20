@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel
 
 
@@ -10,4 +12,8 @@ class BoolStatus(BaseModel):
 
 
 class DataDisplay(BaseModel):
+
     data: str
+class MsgWithData(BaseModel):
+    message: str
+    data: Any  # ou un modèle plus précis OrganisationRead ou similaire
