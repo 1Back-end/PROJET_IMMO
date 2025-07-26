@@ -1,4 +1,6 @@
 from datetime import datetime
+from email.policy import default
+
 from sqlalchemy import Column, ForeignKey, String, Text, DateTime, Boolean,Integer, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -9,6 +11,7 @@ class LicenceRequestServiceStatus(str,Enum):
     pending = "pending"
     accepted = "accepted"
     declined = "declined"
+    prolonged = "prolonged"
 
 class LicenceRequestService(Base):
     __tablename__ = 'licence_request_services'
@@ -32,6 +35,15 @@ class LicenceRequestService(Base):
     creator = relationship("User", foreign_keys=[added_by], backref="licence_request_services")
 
     description:str = Column(Text, nullable=True)
+
+    counter_generation:int = Column(Integer, nullable=True,default=0)
+    counter_prolongation = Column(Integer, nullable=True,default=1)
+
+    is_accepted = Column(Boolean, nullable=True,default=False)
+    is_declined = Column(Boolean, nullable=True,default=False)
+    is_prolonged = Column(Boolean, nullable=True,default=False)
+
+
 
     is_deleted = Column(Boolean, nullable=False, default=False)
 

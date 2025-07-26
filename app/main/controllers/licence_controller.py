@@ -64,12 +64,12 @@ async def download_license_file(
         raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
     license_key = license_obj.license_key
 
-    file_path = f"certificats/{license_key}.txt"
+    file_path = f"certificats/{license_key}.cert"
 
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=__(key="file-not-found"))
 
-    return FileResponse(path=file_path, media_type='application/octet-stream', filename=f"{license_key}.txt")
+    return FileResponse(path=file_path, media_type='application/octet-stream', filename=f"{license_key}.cert")
 
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)
 async def get_licence_by_uuid(
@@ -80,21 +80,21 @@ async def get_licence_by_uuid(
 ):
     return crud.licence.get_by_uuid(db=db, uuid=uuid)
 
-@router.post("/actived-licence", response_model=schemas.Msg)
-async def update_actived_licence(
+@router.put("/extend-licence", response_model=schemas.Msg)
+async def extend_licence(
         *,
         db: Session = Depends(get_db),
         obj_in:schemas.ActivedLicence,
-        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
 
-    crud.licence.activate_service(
+    crud.licence.extend_licence_service(
         db=db,
         licence_uuid=obj_in.licence_uuid,
         service_uuid=obj_in.service_uuid,
-        encrypted_data = obj_in.encrypted_data
+        licence_duration_uuid=obj_in.licence_duration_uuid
     )
-    return schemas.Msg(message=__(key="licence-activate-successfully"))
+    return schemas.Msg(message=__(key="licence-prolonged"))
 
 
 @router.put("/revoke-licence",response_model=schemas.Msg)
@@ -111,23 +111,6 @@ async def revoke_licence(
         encrypted_data = obj_in.encrypted_data
     )
     return schemas.Msg(message=__(key="licence-revoked-successfully"))
-
-
-@router.post("/prolonged-licence", response_model=schemas.Msg)
-async def prolonged_licence(
-        *,
-        db: Session = Depends(get_db),
-        obj_in: schemas.ProlongedLicence,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
-):
-
-    crud.licence.prolonge_licence(
-        db=db,
-        uuid=obj_in.uuid,
-        number_of_days=obj_in.number_of_days
-    )
-    return schemas.Msg(message=__(key="licence-prolonged"))
-
 
 
 

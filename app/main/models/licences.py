@@ -29,7 +29,10 @@ class License(Base):
     licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     licence_duration = relationship("LicenceDuration", foreign_keys=[licence_duration_uuid], backref="licenses")
 
-    status = Column(String, nullable=False,default=LicenceStatus.pending)
+    licence_request_uuid = Column(String,ForeignKey("licence_request_services.uuid",onupdate="CASCADE",ondelete="CASCADE"),nullable=True)
+    licence_request = relationship("LicenceRequestService",foreign_keys=[licence_request_uuid], backref="licenses")
+
+    status = Column(String, nullable=False)
     encrypted_data = Column(Text, nullable=True)
 
     added_by = Column(String, ForeignKey("users.uuid"), nullable=False)

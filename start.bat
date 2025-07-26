@@ -19,7 +19,7 @@
 
 
 {
-    "login" :"dev@gmail.com",
+    "login" :"user@gmail.com",
     "password" : "Admin@12345"
 
 }

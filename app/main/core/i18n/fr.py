@@ -74,7 +74,9 @@ translation = {
     "city-not-found" : "Ville introuvable",
    "the-validation-account-otp-expired": "Le code OTP de validation est expiré ou manquant.",
    "the-validation-account-otp-invalid": "Le code OTP de validation est invalide.",
-   "organisation-validated-successfully": "L'organisation a été validée avec succès."
+   "organisation-validated-successfully": "L'organisation a été validée avec succès.",
+    "licence-request-not-active" : ""
+
 
 
 

@@ -28,6 +28,21 @@ async def create_licence_response_service(
     return schemas.Msg(message=__(key="request-send-successfully"))
 
 
+@router.post("/extend",response_model=schemas.Msg)
+async def extend_licence_response_service(
+        *,
+        db: Session = Depends(get_db),
+        obj_in: schemas.LicenceRequestCreate,
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    crud.licence_response_service.extend_licence(
+        db=db,
+        obj_in=obj_in,
+        added_by=current_user.uuid
+    )
+    return schemas.Msg(message=__(key="request-send-successfully"))
+
+
 @router.post("/extend-licence",response_model=schemas.Msg)
 async def create_licence_response_service_extend(
         *,
@@ -49,7 +64,7 @@ def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 25,
-    #current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     return crud.licence_response_service.get_many(
         db,
@@ -57,6 +72,20 @@ def get(
         per_page,
     )
 
+@router.get("/get_all_requets", response_model=None)
+def get_all_requests(
+    *,
+    db: Session = Depends(get_db),
+    page: int = 1,
+    per_page: int = 25,
+    current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    return crud.licence_response_service.get_my_requests(
+        db,
+        page,
+        per_page,
+        added_by=current_user.uuid
+    )
 
 @router.put("/update-licence-request-status",response_model=schemas.Msg)
 async def update_licence_request_status(

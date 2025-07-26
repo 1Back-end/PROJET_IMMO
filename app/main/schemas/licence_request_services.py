@@ -14,7 +14,6 @@ class LicenceRequestService(BaseModel):
     service_uuid:str
     licence_duration_uuid:str
     description:Optional[str]
-    type:Optional[str]
 
 
 class LicenceRequestCreate(LicenceRequestService):
@@ -40,6 +39,12 @@ class LicenceRequestServiceResponse(BaseModel):
     type:Optional[str]
     created_at: datetime
     updated_at: datetime
+    is_accepted: Optional[bool]
+    is_declined: Optional[bool]
+    is_prolonged: Optional[bool]
+    counter_generation : Optional[int]
+    counter_prolongation : Optional[int]
+
     model_config = ConfigDict(from_attributes=True)
 
 

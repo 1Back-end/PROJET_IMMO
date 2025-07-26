@@ -399,3 +399,68 @@ def send_organisation_otp_to_user(email_to: str, otp: str, expirate_at: datetime
     except Exception as e:
         logging.error(f"❌ Erreur envoi OTP à {email_to} : {e}")
 
+
+
+def send_user_accepted_request(email_to: str, title: str,full_name:str,request_date:datetime) -> None:
+    try:
+        # Nouveau fichier template
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "licence_request_accepted.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            full_name=full_name,
+            title=title,
+            request_date=request_date.strftime("%d/%m/%Y <UNK> %H:%M"),
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | {title}"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email de vérification envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur envoi email à {email_to} : {e}")
+
+
+
+def send_user_declined_request(email_to: str, title: str,full_name:str,request_date:datetime) -> None:
+    try:
+        # Nouveau fichier template
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "licence_request_declined.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            full_name=full_name,
+            title=title,
+            request_date=request_date.strftime("%d/%m/%Y <UNK> %H:%M"),
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME} | {title}"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email de vérification envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur envoi email à {email_to} : {e}")

@@ -75,7 +75,8 @@ translation = {
     "city-not-found" : "City not found",
     "the-validation-account-otp-expired": "The validation OTP has expired or is missing.",
     "the-validation-account-otp-invalid": "The validation OTP is invalid.",
-    "organisation-validated-successfully": "Organization has been successfully validated."
+    "organisation-validated-successfully": "Organization has been successfully validated.",
+    "licence-request-not-active" : "Licence request not active",
 
 
 }

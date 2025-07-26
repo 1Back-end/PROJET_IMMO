@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f6f6;
+      padding: 20px;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    .title {
+      font-size: 20px;
+      color: #d9534f; /* rouge bootstrap */
+      margin-bottom: 20px;
+    }
+    .content {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #999;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">{{ project_name }}</div>
+
+    <div class="content">
+      <p>Bonjour <strong>{{ full_name }}</strong>,</p>
+      <p>Nous sommes au regret de vous informer que votre <strong>{{ title }}</strong> a été <span style="color: #d9534f;">rejetée</span>.</p>
+      <p>Date de la demande : <strong>{{ request_date }}</strong></p>
+      <p>Pour plus d’informations, merci de contacter notre support.</p>
+      <p>Nous vous remercions pour votre compréhension.</p>
+    </div>
+
+    <div class="footer">
+      &copy; {{ project_name }} – Tous droits réservés.
+    </div>
+  </div>
+</body>
+</html>
