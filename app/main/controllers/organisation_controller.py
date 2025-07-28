@@ -132,6 +132,20 @@ async def get_all_services(
     )
 
 
+@router.put("/soft-delete",response_model=schemas.Msg)
+async def soft_delete_licence(
+        *,
+        db: Session = Depends(get_db),
+        obj_in:schemas.OrganisationDelete,
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
+):
+    crud.organisation.soft_delete(
+        db=db,
+        uuid=obj_in.uuid
+    )
+    return {"message":__(key="organisation-deleted-successfully")}
+
+
 @router.post("/validate_account", response_model=schemas.Msg, status_code=201)
 async def validate_account(
     *,

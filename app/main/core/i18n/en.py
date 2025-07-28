@@ -1,5 +1,4 @@
 translation = {
-
     "phone-number-already-used": "Phone number already used",
     "auth-login-failed": "authentification failed",
     "user-not-activated": "User not actived",
@@ -77,6 +76,8 @@ translation = {
     "the-validation-account-otp-invalid": "The validation OTP is invalid.",
     "organisation-validated-successfully": "Organization has been successfully validated.",
     "licence-request-not-active" : "Licence request not active",
+    "organisation-deleted-successfully" : "Organization deleted successfully",
+
 
 
 }

@@ -9,7 +9,7 @@ import uuid
 from app.main.core.i18n import __
 from sqlalchemy.orm import Session, joinedload
 from app.main.crud.base import CRUDBase
-from app.main import models,schemas
+from app.main import models,schemas,crud
 from app.main.core.security import get_password_hash, verify_password, generate_code
 
 
@@ -38,6 +38,22 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
     @classmethod
     def get_by_phone_number(cls,db:Session,*,phone_number:str) -> Optional[models.Organisation]:
         return db.query(models.Organisation).filter(models.Organisation.phone_number==phone_number,models.Organisation.is_deleted==False).first()
+
+
+    @classmethod
+    def soft_delete(cls,db:Session,*,uuid:str) -> Optional[models.Organisation]:
+        db_obj = cls.get_by_uuid(db,uuid=uuid)
+        if not db_obj:
+            raise HTTPException(status_code=404,detail=__(key="organisation-not-found"))
+        db_obj.is_deleted = True
+        owner = crud.user.get_by_uuid(db=db,uuid=db_obj.owner_uuid)
+        if not owner:
+            raise HTTPException(status_code=404,detail=__(key="organisation-not-found"))
+        owner.is_deleted = True
+        owner.status = models.UserStatus.UNACTIVED
+        db.commit()
+
+
 
     @classmethod
     def create(cls, db: Session, obj_in: schemas.OrganisationCreate, background_tasks: BackgroundTasks) -> Optional[

@@ -79,3 +79,6 @@ class OrganisationSlim(BaseModel):
     email:str
     model_config = ConfigDict(from_attributes=True)
 
+
+class OrganisationDelete(BaseModel):
+    uuid:str
