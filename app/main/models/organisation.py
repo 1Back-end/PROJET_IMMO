@@ -1,7 +1,7 @@
 from sqlalchemy.sql import func
 from datetime import datetime
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean, nullslast
 from app.main.models.db.base_class import Base
 from enum import Enum
 
@@ -34,6 +34,8 @@ class Organisation(Base):
 
     validation_account_otp = Column(String, nullable=True)
     validation_otp_expirate_at = Column(DateTime, nullable=True)
+
+    additional_information: str = Column(String, default="",nullable=True)
 
     status = Column(String, nullable=False, default=OrganisationStatus.inactive.value)
     created_at = Column(DateTime, default=func.now())

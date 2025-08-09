@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from typing import Any, Optional
+from typing import Any, Optional, List
 from fastapi import APIRouter, Depends, Body, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from app.main.core.dependencies import get_db, TokenRequired
@@ -82,7 +82,7 @@ async def update_organisation_status(
         uuid=obj_in.uuid,
         status=obj_in.status
     )
-    return schemas.Msg(message=__(key="organisation-status-updated-successfully"))
+    return {"message": __(key="organisation-status-updated-successfully")}
 
 
 @router.get("/get_all_organisations", response_model=None,status_code=200)
@@ -212,3 +212,14 @@ def resend_otp(
     )
 
     return {"message": "Un nouveau code OTP a été envoyé à votre adresse e-mail."}
+
+
+@router.get("/get_my_services", response_model=List[schemas.ServiceSlim1])
+async def get_my_services(
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    return crud.organisation.get_all_service_by_owners(
+        db=db,
+        owner_uuid=current_user.uuid
+    )

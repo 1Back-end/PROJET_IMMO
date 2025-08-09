@@ -69,17 +69,23 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
     @classmethod
     def extend_licence(cls, db: Session, *, obj_in: schemas.LicenceRequestServiceExtend, added_by: str) -> Optional[
         models.LicenceRequestService]:
+
         licence_duration  = crud.licence_duration.get_by_uuid(db=db, uuid=obj_in.licence_duration_uuid)
         if not licence_duration:
             raise HTTPException(status_code=404, detail=__(key="licence-duration-not-found"))
-        # Création de la demande de licence
+
+        licence = crud.licence.get_by_uuid(db=db, uuid=obj_in.licence_uuid)
+        if not licence:
+            raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+
+
         db_obj = models.LicenceRequestService(
             uuid=str(uuid.uuid4()),
             service_uuid=obj_in.service_uuid,
             licence_duration_uuid=obj_in.licence_duration_uuid,
             description=obj_in.description,
             type="Prolongement de licence",
-            number_of_days=licence_duration.duration_days,
+            licence_uuid = obj_in.licence_uuid,
             added_by=added_by
         )
         db.add(db_obj)

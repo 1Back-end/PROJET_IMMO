@@ -14,7 +14,7 @@ async  def create_services(
         *,
         db: Session = Depends(get_db),
         obj_in: schemas.ServiceCreate,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     exist_service = crud.services.get_by_name(db=db, name=obj_in.name)
     if exist_service:
@@ -37,7 +37,7 @@ async def update_services(
         *,
         db: Session = Depends(get_db),
         obj_in: schemas.ServiceUpdate,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     crud.services.update(
         db=db,
@@ -79,7 +79,7 @@ async def update_services_status(
         *,
         db: Session = Depends(get_db),
         obj_in: schemas.ServiceUpdateStatus,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     if obj_in.status not in ["active", "inactive"]:
         raise HTTPException(status_code=400, detail=__(key="status-invalid"))
@@ -96,7 +96,7 @@ async def get_service_by_uuid(
         *,
         db: Session = Depends(get_db),
         uuid:str,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     service = crud.services.get_by_uuid(db=db, uuid=uuid)
     if not service:

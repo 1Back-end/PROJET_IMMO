@@ -62,15 +62,20 @@ async def download_license_file(
 
     if not license_obj:
         raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
-    license_key = license_obj.license_key
 
-    file_path = f"certificats/{license_key}.cert"
+    # Utilisez 'license_obj.added_by' pour construire le nom de fichier
+    file_name = f"{license_obj.added_by}.cert"
+    file_path = f"certificats/{file_name}"
 
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=__(key="file-not-found"))
 
-    return FileResponse(path=file_path, media_type='application/octet-stream', filename=f"{license_key}.cert")
-
+    # Retourne le fichier et définit le nom de fichier dans l'en-tête
+    return FileResponse(
+        path=file_path,
+        media_type='application/octet-stream',
+        filename=file_name
+    )
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)
 async def get_licence_by_uuid(
         *,

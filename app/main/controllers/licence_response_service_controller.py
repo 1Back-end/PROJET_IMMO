@@ -32,7 +32,7 @@ async def create_licence_response_service(
 async def extend_licence_response_service(
         *,
         db: Session = Depends(get_db),
-        obj_in: schemas.LicenceRequestCreate,
+        obj_in: schemas.LicenceRequestServiceExtend,
         current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
 ):
     crud.licence_response_service.extend_licence(

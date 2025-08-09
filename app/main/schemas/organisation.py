@@ -18,6 +18,8 @@ class OrganisationBase(BaseModel):
     company_phone_number :Optional[str]=None
     company_description :Optional[str]=None
 
+    additional_information : Optional[str]=None
+
 
     country_uuid : Optional[str]=None
     city_uuid : Optional[str]=None
@@ -39,6 +41,7 @@ class OrganisationUpdate(BaseModel):
 
     country_uuid: Optional[str] = None
     city_uuid: Optional[str] = None
+    additional_information : Optional[str] = None
 
 
 class OrganisationOut(BaseModel):
@@ -52,6 +55,7 @@ class OrganisationOut(BaseModel):
     owner: Optional[AddedBy]
     owner_services: List[OrganisationOwnerServiceOut]  # <-- liste de rel linkée au service
     status: str
+    additional_information: Optional[str]
     created_at: datetime
     updated_at: Optional[datetime]
 

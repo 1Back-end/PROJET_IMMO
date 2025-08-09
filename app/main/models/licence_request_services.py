@@ -25,11 +25,13 @@ class LicenceRequestService(Base):
     licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
     licence_duration = relationship("LicenceDuration", foreign_keys=[licence_duration_uuid], backref="licence_request_services")
 
+    licence_uuid = Column(String,ForeignKey("licenses.uuid", onupdate="CASCADE", ondelete="CASCADE"),nullable=True)
+    licence = relationship("License",foreign_keys=[licence_uuid],  backref="licence_request_services")
+
     status = Column(String, nullable=False, default=LicenceRequestServiceStatus.pending)
 
     type = Column(String, nullable=False)
 
-    number_of_days = Column(Integer, nullable=True)
 
     added_by = Column(String, ForeignKey("users.uuid"), nullable=False)
     creator = relationship("User", foreign_keys=[added_by], backref="licence_request_services")
@@ -37,12 +39,10 @@ class LicenceRequestService(Base):
     description:str = Column(Text, nullable=True)
 
     counter_generation:int = Column(Integer, nullable=True,default=0)
-    counter_prolongation = Column(Integer, nullable=True,default=1)
+    counter_prolongation = Column(Integer, nullable=True,default=0)
 
     is_accepted = Column(Boolean, nullable=True,default=False)
-    is_declined = Column(Boolean, nullable=True,default=False)
     is_prolonged = Column(Boolean, nullable=True,default=False)
-
 
 
     is_deleted = Column(Boolean, nullable=False, default=False)

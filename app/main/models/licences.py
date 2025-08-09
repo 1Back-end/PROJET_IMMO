@@ -41,6 +41,9 @@ class License(Base):
 
     is_deleted = Column(Boolean, nullable=False, default=False)
 
+    # Dans models.py
+    licence_created = Column(Boolean, default=False)
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
 

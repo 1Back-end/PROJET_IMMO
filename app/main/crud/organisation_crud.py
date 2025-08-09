@@ -102,6 +102,7 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             status=models.OrganisationStatus.inactive,
             validation_account_otp=otp_code,
             validation_otp_expirate_at=otp_expiration,
+            additional_information=obj_in.additional_information,
         )
         db.add(new_org)
         db.commit()
@@ -265,7 +266,18 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
         db_obj.email = obj_in.company_email if obj_in.company_email else obj_in.email
         db_obj.phone_number = obj_in.company_number if obj_in.company_number else obj_in.phone_number
         db_obj.description = obj_in.company_description if obj_in.company_description else obj_in.description
+        db_obj.additional_information = obj_in.additional_information if obj_in.additional_information else obj_in.additional_information
 
+    @classmethod
+    def get_all_service_by_owners(cls, db: Session, *, owner_uuid: str):
+        services = (
+            db.query(models.Service)
+            .join(models.OrganisationOwnerService, models.Service.uuid == models.OrganisationOwnerService.service_uuid)
+            .filter(models.OrganisationOwnerService.owner_uuid == owner_uuid,
+                    models.OrganisationOwnerService.is_deleted == False)
+            .all()
+        )
+        return services
 
 
 
