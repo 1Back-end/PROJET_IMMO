@@ -59,7 +59,7 @@ def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 25,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.country_with_city.get_many(
         db,
@@ -76,7 +76,7 @@ async def get_all_contry_for_user_or_admin(
     order: Optional[str] = None,
     order_field: Optional[str] = None,
     keyword: Optional[str] = None,
-    #current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    #current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.country_with_city.get_many_contry(
         db,

@@ -52,6 +52,9 @@ class User(Base):
     last_login_date = Column(DateTime, nullable=True, default=None)
     connexion_counter = Column(Integer, nullable=True, default=0)
 
+    deletion_code = Column(String, nullable=True)
+    deletion_code_expires_at = Column(DateTime, nullable=True, default=None)
+
     organisations = relationship("Organisation", back_populates="owner", uselist=False)
 
 

@@ -33,6 +33,16 @@ class OrganisationValidateAccount(BaseModel):
     email: str
     code_otp:str
 
+
+class OrgansationToDelete(BaseModel):
+    email: str
+
+
+class OrganisationToValidateAccountSlim1(BaseModel):
+    uuid: str
+    email: str
+    code: str
+
 class OrganisationUpdate(BaseModel):
     company_name: Optional[str] = None
     company_email: Optional[str] = None

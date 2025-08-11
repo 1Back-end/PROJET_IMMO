@@ -24,6 +24,10 @@ class ServiceUpdateStatus(BaseModel):
     uuid: str
     status: str
 
+class ServiceToDelete(BaseModel):
+    uuid: str
+    code:str
+
 class ServiceOut(BaseModel):
     uuid: str
     name: str

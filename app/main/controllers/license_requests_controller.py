@@ -72,7 +72,7 @@ def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 5,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","OWNER"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","OWNER","EDIMESTRE"]))
 ):
     return crud.licence_request.get_many(
         db,
@@ -84,7 +84,7 @@ def get(
 @router.get("/get_all_request_clients", response_model=List[schemas.LicenseResponse])
 async def get_all_request_clients(
         db: Session = Depends(get_db),
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","OWNER","ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","OWNER","ADMIN","EDIMESTRE"]))
 ):
     return crud.licence_request.get_all_requests(
         db=db
@@ -96,7 +96,7 @@ async def update_licence_request_status(
         *,
         db: Session = Depends(get_db),
         obj_in: schemas.LicenceRequestUpdateStatus,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","OWNER","ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","OWNER","ADMIN","EDIMESTRE"]))
 ):
     if obj_in.status not in ["accepted", "declined"]:
         raise HTTPException(status_code=400, detail=__(key="invalid-status"))

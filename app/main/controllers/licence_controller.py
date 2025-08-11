@@ -12,7 +12,35 @@ from app.main.core.config import Config
 from app.main.core.dependencies import TokenRequired
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+from app.main.core.mail import send_user_code_to_delete
+from app.main.core.security import generate_code
+
 router = APIRouter(prefix="/licences", tags=["licences"])
+
+@router.post("/send-otp-validation",response_model=schemas.Msg)
+async def send_otp_validation(
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["ADMIN","SUPER_ADMIN"]))
+):
+    owner = crud.user.get_by_email(db=db, email=current_user.email)
+    if not owner:
+        raise HTTPException(status_code=404, detail=__(key="user-not-found"))
+
+    code = generate_code(length=12)
+    code = str(code[0:5])
+    print(f"Administrator Code Otp", code)
+    owner.deletion_code = code
+    owner.deletion_code_expires_at = datetime.utcnow() + timedelta(days=1)
+    db.commit()
+    db.refresh(owner)
+
+    send_user_code_to_delete(
+        email_to=owner.email,
+        code=code,
+        full_name=f"{owner.first_name} {owner.last_name}",
+        expirate_at=owner.deletion_code_expires_at,
+    )
+    return {"message": "Un code a été envoyé à votre adresse e-mail."}
 
 
 @router.post("/generate-licence", response_model=schemas.Msg)
@@ -22,6 +50,14 @@ async def generate_licence(
         request:schemas.LicenceCreate,
         current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
+    if current_user.deletion_code != request.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
+
     existing_licence = db.query(models.License).filter(
         models.License.organization_uuid == request.organization_uuid,
         models.License.service_uuid == request.service_uuid,
@@ -48,6 +84,11 @@ async def generate_licence(
         request=request,
         added_by=current_user.uuid
     )
+
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
+    db.commit()
+    db.refresh(current_user)
     return schemas.Msg(message=__(key="licence-created-successfully"))
 
 
@@ -92,6 +133,13 @@ async def extend_licence(
         obj_in:schemas.ActivedLicence,
         current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
+    if current_user.deletion_code != obj_in.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
 
     crud.licence.extend_licence_service(
         db=db,
@@ -99,6 +147,10 @@ async def extend_licence(
         service_uuid=obj_in.service_uuid,
         licence_duration_uuid=obj_in.licence_duration_uuid
     )
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
+    db.commit()
+    db.refresh(current_user)
     return schemas.Msg(message=__(key="licence-prolonged"))
 
 
@@ -169,8 +221,8 @@ async def get_all_licences_generator(
     order: str = Query(None, enum=["ASC", "DESC"]),
     status: str = Query(None, enum=[st.value for st in models.LicenceStatus]),
     keyword: Optional[str] = None,
-    order_field: Optional[str] = None,  # Correction de order_filed → order_field
-    #current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    order_field: Optional[str] = None,
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
 ):
     return crud.licence.get_all_licence(
         db=db,

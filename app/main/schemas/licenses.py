@@ -10,6 +10,7 @@ class LicenceBase(BaseModel):
     service_uuid:str
     licence_duration_uuid:str
     licence_request_uuid: str
+    code:Optional[str]
 
 
 class LicenceCreate(LicenceBase):
@@ -78,6 +79,7 @@ class ActivedLicence(BaseModel):
     licence_uuid:str
     service_uuid:str
     licence_duration_uuid:str
+    code:Optional[str]
 
 
 class RenouvelLicence(BaseModel):

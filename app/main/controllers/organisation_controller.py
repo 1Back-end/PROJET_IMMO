@@ -6,7 +6,7 @@ from app.main.core.dependencies import get_db, TokenRequired
 from app.main import schemas, crud, models
 from app.main.core.i18n import __
 from app.main.core.dependencies import TokenRequired
-from app.main.core.mail import send_organisation_otp_to_user
+from app.main.core.mail import send_organisation_otp_to_user, send_user_code_to_delete
 from app.main.core.security import generate_code
 from app.main.crud import services
 from typing import Optional, Literal
@@ -95,7 +95,7 @@ async def get_all_services(
     order_field: Optional[str] = None,
     keyword: Optional[str] = None,
     status: Optional[str] = None,
-    #current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.organisation.get_many(
         db,
@@ -223,3 +223,66 @@ async def get_my_services(
         db=db,
         owner_uuid=current_user.uuid
     )
+
+@router.post("/send-otp-validation",response_model=schemas.Msg)
+async def send_otp_validation(
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["ADMIN","SUPER_ADMIN"]))
+):
+    owner = crud.user.get_by_email(db=db, email=current_user.email)
+    if not owner:
+        raise HTTPException(status_code=404, detail=__(key="user-not-found"))
+
+    code = generate_code(length=12)
+    code = str(code[0:5])
+    print(f"Administrator Code Otp", code)
+    owner.deletion_code = code
+    owner.deletion_code_expires_at = datetime.utcnow() + timedelta(days=1)
+    db.commit()
+    db.refresh(owner)
+
+    send_user_code_to_delete(
+        email_to=owner.email,
+        code=code,
+        full_name=f"{owner.first_name} {owner.last_name}",
+        expirate_at=owner.deletion_code_expires_at,
+    )
+    return {"message": "Le code de suppression a été envoyé à votre adresse e-mail."}
+
+
+@router.put("/verify-and-delete",response_model=schemas.Msg)
+async def verify_and_delete(
+        obj_in: schemas.OrganisationToValidateAccountSlim1,
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["ADMIN","SUPER_ADMIN"]))
+
+):
+    owner = crud.user.get_by_email(db=db, email=obj_in.email)
+    if not owner:
+        raise HTTPException(status_code=404, detail=__(key="user-not-found"))
+
+    if current_user.deletion_code != obj_in.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
+
+    db_obj = crud.organisation.get_by_uuid(db=db, uuid=obj_in.uuid)
+    if not db_obj:
+        raise HTTPException(status_code=404, detail=__(key="organisation-not-found"))
+
+    db_obj.is_deleted = True
+    db_obj.status = models.OrganisationStatus.inactive
+
+    owner.is_deleted = True
+    owner.status = models.UserStatus.UNACTIVED
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
+
+    db.commit()
+    db.refresh(db_obj)
+    db.refresh(owner)
+    db.refresh(current_user)
+    return {"message": __(key="organisation-deleted-successfully")}

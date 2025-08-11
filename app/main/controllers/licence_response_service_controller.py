@@ -64,7 +64,7 @@ def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 25,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.licence_response_service.get_many(
         db,

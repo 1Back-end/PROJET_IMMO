@@ -32,7 +32,7 @@ async def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 25,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","OWNER"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","OWNER","EDIMESTRE"]))
 ):
     return crud.licence_duration.get_many(
         db,
@@ -108,3 +108,32 @@ async def soft_delete_licence(
         uuid=obj_in.uuid
     )
     return {"message":__(key="licence-duration-deleted-success")}
+
+
+@router.put("/verify-and-delete",response_model=schemas.Msg)
+async def verify_and_delete(
+        obj_in: schemas.ServiceToDelete,
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["ADMIN","SUPER_ADMIN"]))
+
+):
+    if current_user.deletion_code != obj_in.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
+
+    db_obj = crud.licence_duration.get_by_uuid(db=db, uuid=obj_in.uuid)
+    if not db_obj:
+        raise HTTPException(status_code=404, detail=__(key="licence-duration-not-found"))
+
+    db_obj.is_deleted = True
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
+
+    db.commit()
+    db.refresh(db_obj)
+    db.refresh(current_user)
+    return {"message": __(key="licence-duration-deleted-success")}

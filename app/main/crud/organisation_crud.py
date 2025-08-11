@@ -1,7 +1,7 @@
 import math
 from datetime import datetime, timedelta
 import random
-from app.main.core.mail import notify_new_company,send_organisation_otp
+from app.main.core.mail import notify_new_company, send_organisation_otp, send_user_code_to_delete
 from fastapi import HTTPException, BackgroundTasks
 from sqlalchemy import or_
 from typing import List, Optional, Union
