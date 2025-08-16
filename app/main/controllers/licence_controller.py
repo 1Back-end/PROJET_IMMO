@@ -97,7 +97,7 @@ async def download_license_file(
         *,
         license_uuid: str,
         db: Session = Depends(get_db),
-        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER","SUPER_ADMIN","ADMIN"]))
 ):
     license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
 
@@ -105,16 +105,22 @@ async def download_license_file(
         raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
 
     # Utilisez 'license_obj.added_by' pour construire le nom de fichier
-    file_name = f"{license_obj.added_by}.cert"
-    file_path = f"certificats/{file_name}"
+    license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
+
+    if not license_obj:
+        raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+
+    # On récupère le nom du fichier depuis la DB
+    file_name = license_obj.certificate_file  # champ à ajouter dans ton modèle License
+    file_path = os.path.join("certificats", file_name)
 
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=__(key="file-not-found"))
 
-    # Retourne le fichier et définit le nom de fichier dans l'en-tête
+    # Retourne le fichier avec le bon nom
     return FileResponse(
         path=file_path,
-        media_type='application/octet-stream',
+        media_type="application/octet-stream",
         filename=file_name
     )
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)

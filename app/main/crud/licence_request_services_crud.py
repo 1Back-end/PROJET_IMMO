@@ -126,7 +126,7 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
             page: int = 1,
             per_page: int = 25,
     ):
-        record_query = db.query(models.LicenceRequestService).filter(models.LicenceRequestService.is_deleted == False,)
+        record_query = db.query(models.LicenceRequestService).filter(models.LicenceRequestService.is_deleted == False).order_by(models.LicenceRequestService.created_at.desc())
 
         total = record_query.count()
 

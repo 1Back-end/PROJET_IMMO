@@ -43,6 +43,7 @@ class License(Base):
 
     # Dans models.py
     licence_created = Column(Boolean, default=False)
+    certificate_file = Column(String, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)

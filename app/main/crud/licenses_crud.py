@@ -1,3 +1,4 @@
+import hashlib
 import math
 import os
 from datetime import datetime, date, timedelta
@@ -46,15 +47,18 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
     def create(cls, db: Session, *, request: schemas.LicenceCreate, added_by: str) -> Optional[models.License]:
         license_key = generate_license_key()
 
-        data_to_sign = f"{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode("utf-8")
+        # Data à signer
+        data_to_sign = f"{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode(
+            "utf-8")
 
-        licence_duration = crud.licence_duration.get_by_uuid(db=db,uuid=request.licence_duration_uuid)
+        # Vérif des dépendances
+        licence_duration = crud.licence_duration.get_by_uuid(db=db, uuid=request.licence_duration_uuid)
         if not licence_duration:
-            raise HTTPException(status_code=404,detail=__(key="licence-duration-not-found"))
+            raise HTTPException(status_code=404, detail=__(key="licence-duration-not-found"))
 
-        licence_request = crud.licence_response_service.get_by_uuid(db=db,uuid=request.licence_request_uuid)
+        licence_request = crud.licence_response_service.get_by_uuid(db=db, uuid=request.licence_request_uuid)
         if not licence_request:
-            raise HTTPException(status_code=404,detail=__(key="licence-request-not-found"))
+            raise HTTPException(status_code=404, detail=__(key="licence-request-not-found"))
 
         existing_licence = db.query(models.License).filter(
             models.License.organization_uuid == request.organization_uuid,
@@ -65,10 +69,6 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         if existing_licence:
             raise HTTPException(status_code=400, detail=__(key="service-already-has-this-duration-license"))
 
-        licence_duration = crud.licence_duration.get_by_uuid(db=db, uuid=request.licence_duration_uuid)
-        if not licence_duration:
-            raise HTTPException(status_code=400, detail=__(key="licence-duration-not-found"))
-
         organisation = crud.organisation.get_by_uuid(db=db, uuid=request.organization_uuid)
         if not organisation:
             raise HTTPException(status_code=404, detail=__(key="organisation-not-found"))
@@ -76,41 +76,47 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         service = crud.services.get_by_uuid(db=db, uuid=request.service_uuid)
         if not service:
             raise HTTPException(status_code=404, detail=__(key="service-not-found"))
+
         licence_request.counter_generation = 1
 
-
+        # Signature
         signature = cls.sign_license_data(data_to_sign)
 
+        # Génération du nom du fichier .cert
+        raw_name = f"{added_by}-{uuid.uuid4()}"
+        hashed_name = hashlib.sha256(raw_name.encode("utf-8")).hexdigest()
+        cer_filename = f"{hashed_name[:64]}.cert"
+
+        # Création de l'objet licence
         db_obj = models.License(
             uuid=str(uuid.uuid4()),
             license_key=license_key,
             organization_uuid=request.organization_uuid,
             service_uuid=request.service_uuid,
             licence_duration_uuid=request.licence_duration_uuid,
-            licence_request_uuid= request.licence_request_uuid,
+            licence_request_uuid=request.licence_request_uuid,
             encrypted_data=signature,
             added_by=added_by,
-            expires_at = datetime.utcnow() + timedelta(days=licence_duration.duration_days),
-            status = models.LicenceStatus.active
+            expires_at=datetime.utcnow() + timedelta(days=licence_duration.duration_days),
+            status=models.LicenceStatus.active,
+            certificate_file=cer_filename
         )
         db.add(db_obj)
-
         db.commit()
         db.refresh(db_obj)
+
+        # Sauvegarde physique du certificat
         cert_dir = "certificats"
         os.makedirs(cert_dir, exist_ok=True)
 
-        # S'assurer que la signature est encodée en base64 au format PEM
         pem_signature = base64.b64encode(signature.encode("utf-8")).decode('utf-8')
         pem_formatted = f"-----BEGIN CERTIFICATE-----\n{pem_signature}\n-----END CERTIFICATE-----"
 
-        cer_filename = f"{added_by}.cert"
         cer_path = os.path.join(cert_dir, cer_filename)
-
-        # Écriture dans le fichier .cer
         with open(cer_path, "w", encoding="utf-8") as f:
             f.write(pem_formatted)
 
+        # Création d'une notification
         new_notification = models.LicenceRequest(
             uuid=str(uuid.uuid4()),
             title="Licence Générée",
@@ -121,6 +127,7 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         db.add(new_notification)
         db.commit()
         db.refresh(new_notification)
+
         return db_obj
 
     @classmethod
@@ -129,9 +136,6 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         db_service = crud.services.get_by_uuid(db=db, uuid=service_uuid)
         if not db_service:
             raise HTTPException(status_code=404, detail=__(key="service-not-found"))
-
-        if db_service.status == models.ServiceStatus.inactive:
-            raise HTTPException(status_code=400, detail=__(key="service-inactive"))
 
         db_licence_duration = crud.licence_duration.get_by_uuid(db=db, uuid=licence_duration_uuid)
         if not db_licence_duration:
@@ -154,9 +158,10 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         if db_licence.status == models.LicenceStatus.revoked:
             raise HTTPException(status_code=400, detail=__(key="licence-status-revoked"))
 
-        db_licence.status = models.LicenceStatus.active
+        db_licence.status = models.LicenceStatus.prolonged
         db_licence.licence_duration_uuid = db_licence_duration.uuid
         db_licence_request.counter_prolongation += 1
+        db_licence_request.status = models.LicenceRequestServiceStatus.accepted
 
         if db_licence.expires_at and db_licence.expires_at > datetime.utcnow():
             db_licence.expires_at += timedelta(days=db_licence_duration.duration_days)

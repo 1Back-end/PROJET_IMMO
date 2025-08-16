@@ -13,6 +13,8 @@ class LicenceRequestServiceStatus(str,Enum):
     declined = "declined"
     prolonged = "prolonged"
 
+    
+
 class LicenceRequestService(Base):
     __tablename__ = 'licence_request_services'
 

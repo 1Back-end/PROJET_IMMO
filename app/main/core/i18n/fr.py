@@ -2,7 +2,7 @@ translation = {
     "phone-number-already-used": "Le numéro de téléphone est déjà utilisé",
     "owner-not-found": "Propriétaire introuvable",
     "auth-login-failed": "Échec de la connexion",
-    "user-not-activated": "Utilisateur non activé",
+    "user-not-activated": "Compte désactivé",
     "user-not-found": "Utilisateur introuvable",
     "incorrect-current-password": "Mot de passe actuel incorrect",
     "different-password-required": "Un mot de passe différent est requis",
@@ -78,4 +78,5 @@ translation = {
     "licence-request-not-active" : "Durée de validation inactif",
     "organisation-deleted-successfully" : "Organisation supprimée avec succès",
     "invalid-code" : "Code Invalide",
+
 }
