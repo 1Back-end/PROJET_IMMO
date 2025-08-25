@@ -21,5 +21,5 @@ class LicenceDuration(Base):
     is_deleted: bool = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-    added_by = Column(String, ForeignKey("users.uuid"), nullable=True)
+    added_by = Column(String, ForeignKey("users.uuid",ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
     creator = relationship("User", foreign_keys=[added_by])

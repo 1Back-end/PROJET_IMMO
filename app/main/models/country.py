@@ -31,7 +31,7 @@ class City(Base):
     longitude = Column(Float, index=True, nullable=True)
     altitude = Column(Float, index=True, nullable=True)
 
-    country_uuid = Column(String, ForeignKey("countries.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=True)
+    country_uuid = Column(String, ForeignKey("countries.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=True)
     is_deleted = Column(Boolean, nullable=True, index=True, default=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())

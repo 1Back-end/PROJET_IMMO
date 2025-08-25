@@ -12,36 +12,35 @@ class LicenceStatus(str, Enum):
     active = "active"
     expired = "expired"
     revoked = "revoked"
-    deleted = "deleted"
     prolonged = "prolonged"
 
 class License(Base):
     __tablename__ = 'licenses'
     uuid = Column(String, primary_key=True)
-    license_key = Column(String, unique=True, nullable=False)
+    license_key = Column(String, nullable=False)
 
-    organization_uuid = Column(String, ForeignKey("organisations.uuid",onupdate="CASCADE",ondelete="CASCADE"),nullable=False)
+    organization_uuid = Column(String, ForeignKey("organisations.uuid",ondelete="SET NULL", onupdate="CASCADE"),nullable=False)
     organisation = relationship("Organisation", foreign_keys=[organization_uuid], backref="licenses")
 
-    service_uuid = Column(String, ForeignKey("services.uuid",onupdate="CASCADE",ondelete="CASCADE"),nullable=False)
+    service_uuid = Column(String, ForeignKey("services.uuid",ondelete="SET NULL", onupdate="CASCADE"),nullable=False)
     service = relationship("Service", foreign_keys=[service_uuid], backref="licenses")
 
-    licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False)
     licence_duration = relationship("LicenceDuration", foreign_keys=[licence_duration_uuid], backref="licenses")
 
-    licence_request_uuid = Column(String,ForeignKey("licence_request_services.uuid",onupdate="CASCADE",ondelete="CASCADE"),nullable=True)
+    licence_request_uuid = Column(String,ForeignKey("licence_request_services.uuid",ondelete="SET NULL", onupdate="CASCADE",use_alter=True),nullable=True)
     licence_request = relationship("LicenceRequestService",foreign_keys=[licence_request_uuid], backref="licenses")
+
 
     status = Column(String, nullable=False)
     encrypted_data = Column(Text, nullable=True)
 
-    added_by = Column(String, ForeignKey("users.uuid"), nullable=False)
+    added_by = Column(String, ForeignKey("users.uuid",ondelete="SET NULL", onupdate="CASCADE"), nullable=False)
     creator = relationship("User", foreign_keys=[added_by],backref="licenses")
     expires_at = Column(DateTime, nullable=True)
 
     is_deleted = Column(Boolean, nullable=False, default=False)
 
-    # Dans models.py
     licence_created = Column(Boolean, default=False)
     certificate_file = Column(String, nullable=True)
 

@@ -151,7 +151,8 @@ async def extend_licence(
         db=db,
         licence_uuid=obj_in.licence_uuid,
         service_uuid=obj_in.service_uuid,
-        licence_duration_uuid=obj_in.licence_duration_uuid
+        licence_duration_uuid=obj_in.licence_duration_uuid,
+
     )
     current_user.deletion_code = None
     current_user.deletion_code_expires_at = None
@@ -160,19 +161,27 @@ async def extend_licence(
     return schemas.Msg(message=__(key="licence-prolonged"))
 
 
-@router.put("/revoke-licence",response_model=schemas.Msg)
+@router.put("/revoke_licence",response_model=schemas.Msg)
 async def revoke_licence(
         *,
         db: Session = Depends(get_db),
-        obj_in:schemas.ActivedLicence,
+        obj_in:schemas.RevokedLicence,
         current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
 ):
+    if current_user.deletion_code != obj_in.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
+
     crud.licence.revoke_licence(
         db=db,
-        licence_uuid=obj_in.licence_uuid,
-        service_uuid=obj_in.service_uuid,
-        encrypted_data = obj_in.encrypted_data
+        uuid=obj_in.uuid,
     )
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
     return schemas.Msg(message=__(key="licence-revoked-successfully"))
 
 
@@ -264,4 +273,28 @@ async def get_all_licence_for_my_organisation(
         owner_uuid=current_user.uuid,
     )
 
+
+
+@router.get("/check/{license_uuid}")
+def check_licence(
+        license_uuid: str,
+        db: Session = Depends(get_db),
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
+):
+    licence = db.query(models.License).filter(
+        models.License.uuid == license_uuid,
+        models.License.is_deleted == False,
+        models.License.added_by==current_user.uuid,
+    ).first()
+
+    if not licence:
+        raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
+
+    # Vérifie si expirée
+    if licence.is_expired:
+        licence.status = models.LicenceStatus.expired.value
+        db.commit()
+        return {"status": "expired", "expires_at": licence.expires_at}
+
+    return {"status": licence.status, "expires_at": licence.expires_at}
 

@@ -21,13 +21,13 @@ class LicenceRequestService(Base):
 
     uuid:str = Column(String, primary_key=True,index=True)
 
-    service_uuid = Column(String, ForeignKey("services.uuid", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    service_uuid = Column(String, ForeignKey("services.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False)
     service = relationship("Service", foreign_keys=[service_uuid], backref="licence_request_services")
 
-    licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
+    licence_duration_uuid = Column(String, ForeignKey("licence_duration.uuid", ondelete="SET NULL", onupdate="CASCADE"),nullable=False)
     licence_duration = relationship("LicenceDuration", foreign_keys=[licence_duration_uuid], backref="licence_request_services")
 
-    licence_uuid = Column(String,ForeignKey("licenses.uuid", onupdate="CASCADE", ondelete="CASCADE"),nullable=True)
+    licence_uuid = Column(String,ForeignKey("licenses.uuid", ondelete="SET NULL", onupdate="CASCADE",use_alter=True),nullable=True)
     licence = relationship("License",foreign_keys=[licence_uuid],  backref="licence_request_services")
 
     status = Column(String, nullable=False, default=LicenceRequestServiceStatus.pending)
@@ -35,7 +35,7 @@ class LicenceRequestService(Base):
     type = Column(String, nullable=False)
 
 
-    added_by = Column(String, ForeignKey("users.uuid"), nullable=False)
+    added_by = Column(String, ForeignKey("users.uuid",ondelete="SET NULL", onupdate="CASCADE"), nullable=False)
     creator = relationship("User", foreign_keys=[added_by], backref="licence_request_services")
 
     description:str = Column(Text, nullable=True)

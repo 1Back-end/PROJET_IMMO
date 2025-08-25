@@ -20,7 +20,7 @@ class LicenceRequest(Base):
     is_deleted = Column(Boolean,nullable=False,default=False)
     is_read = Column(Boolean,nullable=False,default=False)
 
-    send_by = Column(String,ForeignKey("users.uuid"), nullable=False)
+    send_by = Column(String,ForeignKey("users.uuid",ondelete="SET NULL", onupdate="CASCADE"), nullable=False)
     owner = relationship("User", foreign_keys=[send_by])
 
     type = Column(String,nullable=True,index=True)

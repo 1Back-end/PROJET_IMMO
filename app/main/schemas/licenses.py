@@ -82,6 +82,10 @@ class ActivedLicence(BaseModel):
     code:Optional[str]
 
 
+class RevokedLicence(BaseModel):
+    uuid:str
+    code: Optional[str]
+
 class RenouvelLicence(BaseModel):
     uuid:str
     new_start_date:date

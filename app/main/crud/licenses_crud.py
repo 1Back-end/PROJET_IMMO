@@ -167,25 +167,14 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
             db_licence.expires_at += timedelta(days=db_licence_duration.duration_days)
         else:
             db_licence.expires_at = datetime.utcnow() + timedelta(days=db_licence_duration.duration_days)
-
         db.commit()
 
     @classmethod
-    def revoke_licence(cls,db:Session,*,licence_uuid:str,service_uuid:str) -> Optional[models.License]:
-        db_service = crud.services.get_by_uuid(db=db, uuid=service_uuid)
-        if not db_service:
-            raise HTTPException(status_code=404, detail=__(key="service-not-found"))
-
-        if db_service.status == models.ServiceStatus.inactive:
-            raise HTTPException(status_code=400, detail=__(key="service-inactive"))
-
-        db_licence = cls.get_by_uuid(db=db, uuid=licence_uuid)
-        if not db_licence:
+    def revoke_licence(cls,db:Session,uuid:str) -> Optional[models.License]:
+        obj_in = cls.get_by_uuid(db=db, uuid=uuid)
+        if not obj_in:
             raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
-
-        if db_licence.end_date < date.today():
-            raise HTTPException(status_code=400, detail=__(key="licence-expired"))
-        db_licence.status = models.ServiceStatus.inactive
+        obj_in.status = models.LicenceStatus.revoked
         db.commit()
 
 

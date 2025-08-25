@@ -21,10 +21,10 @@ class Organisation(Base):
     phone_number = Column(String, nullable=False, index=True)
     description = Column(String, nullable=True, index=True)
 
-    country_uuid = Column(String, ForeignKey('countries.uuid', ondelete="CASCADE", onupdate="CASCADE"), nullable=True, index=True)
-    city_uuid = Column(String, ForeignKey("cities.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=True, index=True)
+    country_uuid = Column(String, ForeignKey('countries.uuid', ondelete="SET NULL", onupdate="CASCADE"), nullable=True, index=True)
+    city_uuid = Column(String, ForeignKey("cities.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=True, index=True)
 
-    owner_uuid = Column(String, ForeignKey("users.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=False, index=True)
+    owner_uuid = Column(String, ForeignKey("users.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False, index=True)
 
     # Relations
     country = relationship("Country", back_populates="organisations", passive_deletes=True)
@@ -48,9 +48,9 @@ class OrganisationOwnerService(Base):
 
     uuid = Column(String, primary_key=True, index=True)
 
-    owner_uuid = Column(String, ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False, index=True)
-    organisation_uuid = Column(String, ForeignKey("organisations.uuid", ondelete="CASCADE"), nullable=False, index=True)
-    service_uuid = Column(String, ForeignKey("services.uuid", ondelete="CASCADE"), nullable=False, index=True)
+    owner_uuid = Column(String, ForeignKey("users.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False, index=True)
+    organisation_uuid = Column(String, ForeignKey("organisations.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False, index=True)
+    service_uuid = Column(String, ForeignKey("services.uuid", ondelete="SET NULL", onupdate="CASCADE"), nullable=False, index=True)
 
     # Relations
     owner = relationship("User", backref="organisation_services", passive_deletes=True)

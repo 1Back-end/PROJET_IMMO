@@ -41,7 +41,7 @@ translation = {
     "service-already-has-license": "Ce service possède déjà une licence pour cette organisation.",
     "end-date-must-be-in-the-future": "La date de fin doit être supérieure à la date d'aujourd'hui.",
     "licence-created-successfully" : "Licence créée avec succès.",
-    "licence-revoked-successfully" : "Licenc revoquée avec succès",
+    "licence-revoked-successfully" : "Licence revoquée avec succès",
     "service-inactive": "Le service est inactif.",
     "licence-not-found": "Licence introuvable.",
     "licence-expired": "La licence a expiré.",
@@ -78,5 +78,4 @@ translation = {
     "licence-request-not-active" : "Durée de validation inactif",
     "organisation-deleted-successfully" : "Organisation supprimée avec succès",
     "invalid-code" : "Code Invalide",
-
 }
