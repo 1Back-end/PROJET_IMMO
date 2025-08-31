@@ -78,4 +78,5 @@ translation = {
     "licence-request-not-active" : "Durée de validation inactif",
     "organisation-deleted-successfully" : "Organisation supprimée avec succès",
     "invalid-code" : "Code Invalide",
+
 }

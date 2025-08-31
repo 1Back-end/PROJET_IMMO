@@ -496,3 +496,36 @@ def send_user_code_to_delete(email_to: str, code: int,full_name:str,expirate_at:
 
     except Exception as e:
         logging.error(f"❌ Erreur envoi email à {email_to} : {e}")
+
+
+
+def send_user_code_to_confirmation(email_to: str, code: int,full_name:str,expirate_at:datetime) -> None:
+    try:
+        # Nouveau fichier template
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "send_user_code_to_confirmation.html"
+        template_str = template_path.read_text(encoding="utf-8")
+        template = Template(template_str)
+
+        html_content = template.render(
+            full_name=full_name,
+            code=code,
+            expirate_at=(expirate_at + timedelta(hours=1)).strftime("%d/%m/%Y à %H:%M"),
+            project_name=Config.PROJECT_NAME,
+        )
+
+        msg = MIMEMultipart()
+        msg["From"] = f"{Config.EMAILS_FROM_NAME} <{Config.EMAILS_FROM_EMAIL}>"
+        msg["To"] = email_to
+        msg["Subject"] = f"{Config.PROJECT_NAME}"
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.SMTP_HOST, Config.SMTP_PORT) as server:
+            if Config.SMTP_TLS:
+                server.starttls()
+            server.login(Config.SMTP_USER, Config.SMTP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"✅ Email de vérification envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"❌ Erreur envoi email à {email_to} : {e}")

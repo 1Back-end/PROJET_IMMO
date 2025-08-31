@@ -67,7 +67,8 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
             phone_number=obj_in.owner_phone_number,
             password_hash=get_password_hash(obj_in.owner_password),
             role=models.UserRole.OWNER,
-            is_new_user=False
+            is_new_user=False,
+            status=models.UserStatus.UNACTIVED
         )
         db.add(new_user)
 
@@ -252,6 +253,9 @@ class OrganisationCRUD(CRUDBase[models.Organisation,schemas.OrganisationBase,sch
     def update_status(cls,db:Session,uuid:str,status:str):
         db_obj = cls.get_by_uuid(db=db,uuid=uuid)
         if not db_obj:
+            raise HTTPException(status_code=404,detail=__(key="organisation-not-found"))
+        user = crud.user.get_by_uuid(db=db,uuid=db_obj.owner_uuid)
+        if not user:
             raise HTTPException(status_code=404,detail=__(key="organisation-not-found"))
         db_obj.status = status
         db.commit()

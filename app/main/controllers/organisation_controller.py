@@ -76,12 +76,22 @@ async def update_organisation_status(
 ):
     if obj_in.status not in ["active","inactive"]:
         raise HTTPException(status_code=400,detail=__(key="status-not-found"))
+    db_obj = crud.organisation.get_by_uuid(db=db,uuid=obj_in.uuid)
+    if not db_obj:
+        raise HTTPException(status_code=404,detail=__(key="organisation-not-found"))
+    user = crud.user.get_by_uuid(db=db,uuid=db_obj.owner_uuid)
+    if not user:
+        raise HTTPException(status_code=404,detail=__(key="owner-not-found"))
 
-    crud.organisation.update_status(
-        db=db,
-        uuid=obj_in.uuid,
-        status=obj_in.status
-    )
+    if obj_in.status == "active":
+        user.status = models.UserStatus.ACTIVED
+    elif obj_in.status == "inactive":
+        user.status = models.UserStatus.UNACTIVED
+
+    db_obj.status = obj_in.status
+    db.commit()
+    db.refresh(db_obj)
+
     return {"message": __(key="organisation-status-updated-successfully")}
 
 
@@ -165,7 +175,11 @@ async def validate_account(
     if datetime.utcnow() > organisation.validation_otp_expirate_at:
         raise HTTPException(status_code=400, detail=__(key="the-validation-account-otp-expired"))
 
-    organisation.status = "active"
+    user = crud.user.get_by_uuid(db=db,uuid=organisation.owner_uuid)
+    if not user:
+        raise HTTPException(status_code=404, detail=__(key="user-not-found"))
+    user.status = models.UserStatus.ACTIVED
+    organisation.status = models.OrganisationStatus.active
     organisation.validation_account_otp = None
     organisation.validation_otp_expirate_at = None
     db.commit()

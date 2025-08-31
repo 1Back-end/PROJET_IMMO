@@ -5,7 +5,7 @@ services:
   db_postgres_esm:
     image: postgres:latest
     environment:
-      POSTGRES_DB: sanctions_database
+      POSTGRES_DB: generate_license_api
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     networks:

@@ -12,7 +12,7 @@ from app.main.core.config import Config
 from app.main.core.dependencies import TokenRequired
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-from app.main.core.mail import send_user_code_to_delete
+from app.main.core.mail import send_user_code_to_delete, send_user_code_to_confirmation
 from app.main.core.security import generate_code
 
 router = APIRouter(prefix="/licences", tags=["licences"])
@@ -34,7 +34,7 @@ async def send_otp_validation(
     db.commit()
     db.refresh(owner)
 
-    send_user_code_to_delete(
+    send_user_code_to_confirmation(
         email_to=owner.email,
         code=code,
         full_name=f"{owner.first_name} {owner.last_name}",
@@ -97,7 +97,7 @@ async def download_license_file(
         *,
         license_uuid: str,
         db: Session = Depends(get_db),
-        current_user: models.User = Depends(TokenRequired(roles=["OWNER","SUPER_ADMIN","ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["OWNER","SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
 
@@ -237,7 +237,7 @@ async def get_all_licences_generator(
     status: str = Query(None, enum=[st.value for st in models.LicenceStatus]),
     keyword: Optional[str] = None,
     order_field: Optional[str] = None,
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.licence.get_all_licence(
         db=db,

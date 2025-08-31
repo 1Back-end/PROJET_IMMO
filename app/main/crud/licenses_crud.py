@@ -167,7 +167,21 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
             db_licence.expires_at += timedelta(days=db_licence_duration.duration_days)
         else:
             db_licence.expires_at = datetime.utcnow() + timedelta(days=db_licence_duration.duration_days)
+
         db.commit()
+
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title="Prolongation de licence",
+            description="Nouvelle prolongation de licence",
+            send_by=db_licence.added_by,
+            type="Prolongation de licence",
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
+
+
 
     @classmethod
     def revoke_licence(cls,db:Session,uuid:str) -> Optional[models.License]:
@@ -175,6 +189,14 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         if not obj_in:
             raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
         obj_in.status = models.LicenceStatus.revoked
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title="Licence révoquée",
+            description="Licence révoquée",
+            send_by=obj_in.added_by,
+            type="Licence révoquée"
+        )
+        db.add(new_notification)
         db.commit()
 
 

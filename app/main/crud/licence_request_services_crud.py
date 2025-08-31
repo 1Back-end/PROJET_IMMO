@@ -49,6 +49,18 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
         db.commit()
         db.refresh(db_obj)
 
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title = "Demande de Licence",
+            description = "Nouvelle demande de Licence",
+            is_read = False,
+            send_by = added_by,
+            type =  "Demande de Licence"
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
+
         # Envoi d’email aux administrateurs (sans créer d’enregistrement de notification)
         admins = db.query(models.User).filter(
             models.User.is_deleted == False,
@@ -173,6 +185,16 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
 
         if status == "accepted":
             db_obj.is_accepted = True
+            new_notification = models.LicenceRequest(
+                uuid=str(uuid.uuid4()),
+                title="Demande ou prolongation de licence approuvée",
+                description= "Nouvelle Demande ou prolongation de licence approuvée",
+                send_by= db_obj.added_by,
+                type="Nouvelle Demande ou prolongation de licence"
+            )
+            db.add(new_notification)
+            db.commit()
+            db.refresh(db_obj)
             send_user_accepted_request(
                 email_to=user.email,
                 title=db_obj.type,
@@ -182,6 +204,16 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
 
         elif status == "declined":
             db_obj.is_declined = True
+            new_notification = models.LicenceRequest(
+                uuid=str(uuid.uuid4()),
+                title="Demande ou prolongation de licence rejetté",
+                description="Nouvelle Demande ou prolongation de licence rejetté",
+                send_by=db_obj.added_by,
+                type="Nouvelle Demande ou prolongation de rejetté"
+            )
+            db.add(new_notification)
+            db.commit()
+            db.refresh(db_obj)
             send_user_declined_request(
                 email_to=user.email,
                 title=db_obj.type,

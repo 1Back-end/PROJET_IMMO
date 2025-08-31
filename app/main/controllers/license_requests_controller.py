@@ -105,3 +105,16 @@ async def update_licence_request_status(
         status=obj_in.status
     )
     return schemas.Msg(message=__(key="request-update-successfully"))
+
+
+@router.put("/licence-requests/read", response_model=schemas.Msg)
+def mark_licence_request_as_read(
+    *,
+    db: Session = Depends(get_db),
+    uuid: str,
+) -> Any:
+    """
+    Marquer une demande de licence comme lue
+    """
+    crud.licence_request.change_is_read(db=db, uuid=uuid)
+    return schemas.Msg(message=__(key="request-read-successfully"))
