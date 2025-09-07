@@ -72,6 +72,7 @@ def get(
     db: Session = Depends(get_db),
     page: int = 1,
     per_page: int = 5,
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ):
     return crud.licence_request.get_many(
         db,
@@ -112,6 +113,7 @@ def mark_licence_request_as_read(
     *,
     db: Session = Depends(get_db),
     uuid: str,
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"]))
 ) -> Any:
     """
     Marquer une demande de licence comme lue

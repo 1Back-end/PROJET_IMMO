@@ -71,3 +71,6 @@ class LicenceRequestUpdateStatus(BaseModel):
     status: str
 
 
+class LicenceRequestCancel(BaseModel):
+    request_uuid: str
+    code:Optional[str]

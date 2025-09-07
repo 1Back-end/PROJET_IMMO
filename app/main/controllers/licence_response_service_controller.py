@@ -20,6 +20,7 @@ async def create_licence_response_service(
         obj_in: schemas.LicenceRequestCreate,
         current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
 ):
+
     crud.licence_response_service.create(
         db=db,
         obj_in=obj_in,
@@ -35,6 +36,7 @@ async def extend_licence_response_service(
         obj_in: schemas.LicenceRequestServiceExtend,
         current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
 ):
+
     crud.licence_response_service.extend_licence(
         db=db,
         obj_in=obj_in,
@@ -50,6 +52,7 @@ async def create_licence_response_service_extend(
         obj_in: schemas.LicenceRequestServiceExtend,
         current_user: models.User = Depends(TokenRequired(roles=["OWNER"]))
 ):
+
     crud.licence_response_service.extend_licence(
         db=db,
         obj_in=obj_in,
@@ -192,3 +195,31 @@ def notify_expired_licenses_endpoint(db: Session = Depends(get_db)):
             count += 1
 
     return {"message": f"{count} licences expirées notifiées avec succès."}
+
+
+
+@router.put("/cancel-request-licenses", response_model=schemas.Msg)
+async def cancel_pending_requests(
+        *,
+        db: Session = Depends(get_db),
+        obj_in: schemas.LicenceRequestCancel,
+        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","EDIMESTRE"])),
+
+):
+    if current_user.deletion_code != obj_in.code:
+        raise HTTPException(status_code=400, detail=__(key="invalid-code"))
+
+    if datetime.now() > current_user.deletion_code_expires_at:
+        current_user.deletion_code = None
+        db.commit()
+        raise HTTPException(status_code=400, detail=__(key="code-expired"))
+
+    crud.licence_response_service.cancel_request_licence(
+        db=db,
+        request_uuid=obj_in.request_uuid
+    )
+    current_user.deletion_code = None
+    current_user.deletion_code_expires_at = None
+    db.commit()
+    db.refresh(current_user)
+    return schemas.Msg(message=__(key="request-cancelled"))

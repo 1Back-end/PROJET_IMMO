@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives import serialization
 import base64
+from cryptography.fernet import Fernet
 
 
 
@@ -46,10 +47,6 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
     @classmethod
     def create(cls, db: Session, *, request: schemas.LicenceCreate, added_by: str) -> Optional[models.License]:
         license_key = generate_license_key()
-
-        # Data à signer
-        data_to_sign = f"{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode(
-            "utf-8")
 
         # Vérif des dépendances
         licence_duration = crud.licence_duration.get_by_uuid(db=db, uuid=request.licence_duration_uuid)
@@ -79,15 +76,22 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
 
         licence_request.counter_generation = 1
 
-        # Signature
-        signature = cls.sign_license_data(data_to_sign)
 
-        # Génération du nom du fichier .cert
-        raw_name = f"{added_by}-{uuid.uuid4()}"
-        hashed_name = hashlib.sha256(raw_name.encode("utf-8")).hexdigest()
-        cer_filename = f"{hashed_name[:64]}.cert"
+        key = Fernet.generate_key()
+        fernet = Fernet(key)
 
-        # Création de l'objet licence
+        data_to_encrypt = f"{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode()
+
+        # Chiffrement
+        encrypted_data = fernet.encrypt(data_to_encrypt)
+
+        # --- Nom du fichier certificat
+        random_code = uuid.uuid4().hex[:12]  # petit code aléatoire
+        service_name = service.name.replace(" ", "_")
+        organisation_name = organisation.name.replace(" ", "_")
+        cer_filename = f"{service_name}_{organisation_name}_{random_code}.cer"
+
+        # --- Création de l'objet licence
         db_obj = models.License(
             uuid=str(uuid.uuid4()),
             license_key=license_key,
@@ -95,7 +99,7 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
             service_uuid=request.service_uuid,
             licence_duration_uuid=request.licence_duration_uuid,
             licence_request_uuid=request.licence_request_uuid,
-            encrypted_data=signature,
+            encrypted_data=encrypted_data.decode("utf-8"),  # stocke en base
             added_by=added_by,
             expires_at=datetime.utcnow() + timedelta(days=licence_duration.duration_days),
             status=models.LicenceStatus.active,
@@ -105,18 +109,15 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         db.commit()
         db.refresh(db_obj)
 
-        # Sauvegarde physique du certificat
+        # --- Sauvegarde physique du certificat (en binaire)
         cert_dir = "certificats"
         os.makedirs(cert_dir, exist_ok=True)
-
-        pem_signature = base64.b64encode(signature.encode("utf-8")).decode('utf-8')
-        pem_formatted = f"-----BEGIN CERTIFICATE-----\n{pem_signature}\n-----END CERTIFICATE-----"
-
         cer_path = os.path.join(cert_dir, cer_filename)
-        with open(cer_path, "w", encoding="utf-8") as f:
-            f.write(pem_formatted)
 
-        # Création d'une notification
+        with open(cer_path, "wb") as f:
+            f.write(encrypted_data)
+
+        # --- Création d'une notification
         new_notification = models.LicenceRequest(
             uuid=str(uuid.uuid4()),
             title="Licence Générée",
@@ -129,6 +130,8 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         db.refresh(new_notification)
 
         return db_obj
+
+
 
     @classmethod
     def extend_licence_service(cls, db: Session, *, service_uuid: str, licence_uuid: str, licence_duration_uuid: str):
@@ -198,6 +201,10 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         )
         db.add(new_notification)
         db.commit()
+        db.refresh(new_notification)
+
+
+
 
 
     @classmethod

@@ -78,6 +78,7 @@ translation = {
     "licence-request-not-active" : "Licence request not active",
     "organisation-deleted-successfully" : "Organization deleted successfully",
     "invalid-code" : "Invalid code",
+    "request-cancelled" : "Request cancelled",
 
 
 

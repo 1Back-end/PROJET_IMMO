@@ -78,6 +78,27 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
         return db_obj
 
 
+
+    @classmethod
+    def cancel_request_licence(cls,db:Session,*,request_uuid:str):
+        db_obj = crud.licence_response_service.get_by_uuid(db=db,uuid=request_uuid)
+        if not db_obj:
+            raise HTTPException(status_code=404,detail="Licence request not found")
+        db_obj.status = models.LicenceRequestServiceStatus.declined
+
+        new_notification = models.LicenceRequest(
+            uuid=str(uuid.uuid4()),
+            title = "Annulation de la demande de licence",
+            description = "Annulation de la demande de licence",
+            is_read = False,
+            type = "Annulation de licence",
+            send_by= db_obj.added_by,
+        )
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
+
+
     @classmethod
     def extend_licence(cls, db: Session, *, obj_in: schemas.LicenceRequestServiceExtend, added_by: str) -> Optional[
         models.LicenceRequestService]:
@@ -214,6 +235,7 @@ class CRUDLicenceRequestService(CRUDBase[models.LicenceRequestService,schemas.Li
             db.add(new_notification)
             db.commit()
             db.refresh(db_obj)
+
             send_user_declined_request(
                 email_to=user.email,
                 title=db_obj.type,

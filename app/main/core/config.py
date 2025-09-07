@@ -58,7 +58,7 @@ class ConfigClass(BaseSettings):
     PREFERRED_LANGUAGE: str = get_secret("PREFERRED_LANGUAGE", 'fr')
     API_V1_STR: str = get_secret("API_V1_STR", "/api/v1")
     
-    PROJECT_NAME: str = get_secret("PROJECT_NAME", "API GENERATE LICENCE")
+    PROJECT_NAME: str = get_secret("PROJECT_NAME", "API GENERATE LICENCE SIAH CONSULTING")
     PROJECT_VERSION: str = get_secret("PROJECT_VERSION", "0.0.1")
 
     # Redis config
@@ -75,7 +75,7 @@ class ConfigClass(BaseSettings):
     SMTP_USER: Optional[str] = get_secret("SMTP_USER", "laurentalphonsewilfried@gmail.com")
     SMTP_PASSWORD: Optional[str] = get_secret("SMTP_PASSWORD", "viuessfzwqnwneil")
     EMAILS_FROM_EMAIL: Optional[EmailStr] = get_secret("EMAILS_FROM_EMAIL", "laurentalphonsewilfried@gmail.com")
-    EMAILS_FROM_NAME: Optional[str] = get_secret("EMAILS_FROM_NAME", "SIA CONSULTING")
+    EMAILS_FROM_NAME: Optional[str] = get_secret("EMAILS_FROM_NAME", "SIAH CONSULTING")
 
     @validator("EMAILS_FROM_NAME")
     def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:

@@ -92,37 +92,38 @@ async def generate_licence(
     return schemas.Msg(message=__(key="licence-created-successfully"))
 
 
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
+from sqlalchemy.orm import Session
+import os
+
 @router.get("/download")
 async def download_license_file(
-        *,
-        license_uuid: str,
-        db: Session = Depends(get_db),
-        current_user: models.User = Depends(TokenRequired(roles=["OWNER","SUPER_ADMIN","ADMIN","EDIMESTRE"]))
+    *,
+    license_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(
+        TokenRequired(roles=["OWNER", "SUPER_ADMIN", "ADMIN", "EDIMESTRE"])
+    )
 ):
     license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
-
     if not license_obj:
         raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
 
-    # Utilisez 'license_obj.added_by' pour construire le nom de fichier
-    license_obj = crud.licence.get_by_uuid(db=db, uuid=license_uuid)
-
-    if not license_obj:
-        raise HTTPException(status_code=404, detail=__(key="licence-not-found"))
-
-    # On récupère le nom du fichier depuis la DB
-    file_name = license_obj.certificate_file  # champ à ajouter dans ton modèle License
+    # 📂 Récupère le fichier enregistré
+    file_name = license_obj.certificate_file
     file_path = os.path.join("certificats", file_name)
 
-    if not os.path.exists(file_path):
+    if not os.path.isfile(file_path):
         raise HTTPException(status_code=404, detail=__(key="file-not-found"))
 
-    # Retourne le fichier avec le bon nom
+    # 📥 Retourne le fichier en binaire
     return FileResponse(
         path=file_path,
         media_type="application/octet-stream",
         filename=file_name
     )
+
 @router.get("/get-licence-by_uuid", response_model=schemas.Licence)
 async def get_licence_by_uuid(
         *,

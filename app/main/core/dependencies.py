@@ -48,9 +48,15 @@ class TokenRequired(HTTPBearer):
             if current_user.is_new_user and not self.let_new_user:
                 raise HTTPException(status_code=403, detail=__(key="first-time-login-require-change-password"))
             
-            # Vérifie si le rôle de l'utilisateur fait partie des rôles autorisés
+
             if self.roles and current_user.role not in self.roles:
-                raise HTTPException(status_code=403, detail=__(key="insufficient permissions"))
+                raise HTTPException(status_code=403, detail=__(key="Non autorisé à accéder à cette ressource"))
+
+            if current_user.status in [models.UserStatus.BLOCKED,models]:
+                raise HTTPException(status_code=403, detail=__(key="Vous ne pouvez plus éffectué une opération dans le système"))
+
+            if current_user.status != models.UserStatus.ACTIVED:
+                raise HTTPException(status_code=403, detail=__(key="Vous ne pouvez plus éffectué une opération dans le système"))
 
             """
             if required_roles:
