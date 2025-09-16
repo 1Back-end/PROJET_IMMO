@@ -167,7 +167,7 @@ async def revoke_licence(
         *,
         db: Session = Depends(get_db),
         obj_in:schemas.RevokedLicence,
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+        current_user: models.User = Depends(TokenRequired(roles=["ADMIN","SUPER_ADMIN"]))
 ):
     if current_user.deletion_code != obj_in.code:
         raise HTTPException(status_code=400, detail=__(key="invalid-code"))
