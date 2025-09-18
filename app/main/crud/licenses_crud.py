@@ -80,7 +80,7 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
         key = Fernet.generate_key()
         fernet = Fernet(key)
 
-        data_to_encrypt = f"{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode()
+        data_to_encrypt = f"{request.organization_uuid}|{request.licence_request_uuid}|{added_by}|{license_key}|{request.organization_uuid}|{request.service_uuid}|{request.licence_duration_uuid}".encode()
 
         # Chiffrement
         encrypted_data = fernet.encrypt(data_to_encrypt)
@@ -99,7 +99,7 @@ class CRUDLicenses(CRUDBase[models.License,schemas.LicenceCreate,schemas.License
             service_uuid=request.service_uuid,
             licence_duration_uuid=request.licence_duration_uuid,
             licence_request_uuid=request.licence_request_uuid,
-            encrypted_data=encrypted_data.decode("utf-8"),  # stocke en base
+            encrypted_data=encrypted_data.decode("utf-8"),
             added_by=added_by,
             expires_at=datetime.utcnow() + timedelta(days=licence_duration.duration_days),
             status=models.LicenceStatus.active,
